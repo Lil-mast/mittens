@@ -1,0 +1,206 @@
+{
+  "gateway": {
+    "auth": {
+      "mode": "token",
+      "token": "YOUR_GATEWAY_TOKEN"
+    },
+    "mode": "local",
+    "port": 18789,
+    "bind": "loopback",
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    },
+    "controlUi": {
+      "allowInsecureAuth": false
+    }
+  },
+  "wizard": {
+    "lastRunAt": "2026-06-18T21:17:26.239Z",
+    "lastRunVersion": "2026.6.8",
+    "lastRunCommand": "doctor",
+    "lastRunMode": "local"
+  },
+  "meta": {
+    "lastTouchedVersion": "2026.6.8",
+    "lastTouchedAt": "2026-06-24T20:00:32.312Z"
+  },
+  "skills": {
+    "entries": {
+      "1password": {
+        "enabled": false
+      },
+      "apple-notes": {
+        "enabled": false
+      },
+      "apple-reminders": {
+        "enabled": false
+      },
+      "bear-notes": {
+        "enabled": false
+      },
+      "blogwatcher": {
+        "enabled": false
+      },
+      "blucli": {
+        "enabled": false
+      },
+      "camsnap": {
+        "enabled": false
+      },
+      "coding-agent": {
+        "enabled": false
+      },
+      "discord": {
+        "enabled": false
+      },
+      "eightctl": {
+        "enabled": false
+      },
+      "gog": {
+        "enabled": true
+      },
+      "goplaces": {
+        "enabled": false
+      },
+      "himalaya": {
+        "enabled": false
+      },
+      "imsg": {
+        "enabled": false
+      },
+      "model-usage": {
+        "enabled": false
+      },
+      "nano-pdf": {
+        "enabled": false
+      },
+      "obsidian": {
+        "enabled": false
+      },
+      "openai-whisper": {
+        "enabled": false
+      },
+      "openai-whisper-api": {
+        "enabled": false
+      },
+      "openhue": {
+        "enabled": false
+      },
+      "oracle": {
+        "enabled": false
+      },
+      "ordercli": {
+        "enabled": false
+      },
+      "peekaboo": {
+        "enabled": false
+      },
+      "sag": {
+        "enabled": false
+      },
+      "session-logs": {
+        "enabled": false
+      },
+      "sherpa-onnx-tts": {
+        "enabled": false
+      },
+      "slack": {
+        "enabled": false
+      },
+      "songsee": {
+        "enabled": false
+      },
+      "sonoscli": {
+        "enabled": false
+      },
+      "spotify-player": {
+        "enabled": false
+      },
+      "summarize": {
+        "enabled": false
+      },
+      "things-mac": {
+        "enabled": false
+      },
+      "trello": {
+        "enabled": false
+      },
+      "video-frames": {
+        "enabled": false
+      },
+      "voice-call": {
+        "enabled": false
+      },
+      "wacli": {
+        "enabled": true
+      },
+      "xurl": {
+        "enabled": false
+      }
+    }
+  },
+  "plugins": {
+    "entries": {
+      "amazon-bedrock": {
+        "config": {
+          "discovery": {
+            "enabled": true,
+            "region": "us-east-1"
+          }
+        },
+        "enabled": true
+      },
+      "whatsapp": {
+        "enabled": false
+      }
+    },
+    "allow": [
+      "amazon-bedrock",
+      "whatsapp"
+    ]
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "amazon-bedrock/amazon.nova-pro-v1:0"
+      }
+    }
+  },
+  "tools": {
+    "profile": "full",
+    "allow": [
+      "exec",
+      "gog",
+      "web_search",
+      "message"
+    ],
+    "exec": {
+      "host": "gateway"
+    }
+  },
+  "channels": {
+    "whatsapp": {
+      "accounts": {
+        "default": {
+          "dmPolicy": "pairing",
+          "allowFrom": [
+            "+254 758748121"
+          ]
+        },
+        "personal": {
+          "authDir": "/home/taz/.openclaw/credentials/whatsapp",
+          "enabled": false
+        }
+      },
+      "allowFrom": [
+        "+254781614100"
+      ]
+    }
+  },
+  "commands": {
+    "ownerAllowFrom": [
+      "whatsapp:+254722423252"
+    ]
+  }
+}
