@@ -1,13 +1,61 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+model User {
+  id              String   @id @default(uuid())
+  email           String   @unique
+  name            String?
+  avatar          String?
+  googleId        String?  @unique
+  gmailToken      Json?
+  ntfyTopic       String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  subscription    Subscription?
+  trial           Trial?
+  emailLogs       EmailLog[]
+}
+
+model Trial {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  startedAt   DateTime @default(now())
+  endsAt      DateTime
+  isActive    Boolean  @default(true)
+  model       String   @default("amazon.nova-micro-v1:0")
+
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model Subscription {
+  id                  String   @id @default(uuid())
+  userId              String   @unique
+  paystackCustomerId  String?
+  paystackSubCode     String?
+  plan                String   @default("pro")
+  model               String   @default("amazon.nova-pro-v1:0")
+  status              String   @default("active")
+  currentPeriodEnd    DateTime?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  user                User     @relation(fields: [userId], references: [id])
+}
+
+model EmailLog {
+  id          String   @id @default(uuid())
+  userId      String
+  subject     String?
+  sender      String?
+  category    String?
+  familiarity String?
+  processedAt DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id])
 }
