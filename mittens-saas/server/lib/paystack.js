@@ -1,5 +1,6 @@
 import axios from 'axios'
 import dotenv from 'dotenv'
+import crypto from 'crypto'
 
 dotenv.config()
 
@@ -63,7 +64,6 @@ export const createSubscription = async (customerId, planCode) => {
 
 // Verify webhook signature
 export const verifyWebhook = (signature, body) => {
-  import crypto from 'crypto'
   const hash = crypto
     .createHmac('sha512', process.env.PAYSTACK_SECRET_KEY)
     .update(JSON.stringify(body))
