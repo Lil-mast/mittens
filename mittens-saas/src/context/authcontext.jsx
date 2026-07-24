@@ -1,46 +1,34 @@
-import { createContext, useContext, useState, useEffect } from 'react'
-import api from '../lib/api'
+import { createContext, useContext, useEffect, useState } from 'react'
+import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext(null)
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser]       = useState(null)
-  const [plan, setPlan]       = useState(null)
+  const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const token = localStorage.getItem('mittens_token')
-    if (token) fetchMe(token)
-    else setLoading(false)
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null)
+      setLoading(false)
+    })
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+      setLoading(false)
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
-  const fetchMe = async (token) => {
-    try {
-      const res = await api.get('/auth/me', {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      setUser(res.data.user)
-      setPlan(res.data.plan)
-    } catch {
-      localStorage.removeItem('mittens_token')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const login = (token) => {
-    localStorage.setItem('mittens_token', token)
-    fetchMe(token)
-  }
-
-  const logout = () => {
-    localStorage.removeItem('mittens_token')
-    setUser(null)
-    setPlan(null)
+  const signOut = async () => {
+    await supabase.auth.signOut()
   }
 
   return (
-    <AuthContext.Provider value={{ user, plan, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, signOut }}>
       {children}
     </AuthContext.Provider>
   )

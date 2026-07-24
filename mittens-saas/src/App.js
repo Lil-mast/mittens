@@ -174,9 +174,9 @@ function Marquee() {
 
 function HowItWorks() {
   const steps = [
-    { n:'01', icon:'📬', title:'Connect Gmail', body:'One-click Google OAuth. Mittens gets secure read access to your inbox in under 30 seconds. Nothing stored without permission.' },
-    { n:'02', icon:'🤖', title:'Agent categorizes', body:'Every 30 minutes, Mittens fetches unread emails, runs them through Nova Micro (trial) or Nova Pro (paid), and applies category rules autonomously.' },
-    { n:'03', icon:'📲', title:'You get a report', body:"A clean digest hits your phone via ntfy.sh — meetings, security alerts, spam count. No noise, no missed emails, just signal." },
+    { n:'01', title:'Connect Gmail', body:'One-click Google OAuth. Mittens gets secure read access to your inbox in under 30 seconds. Nothing stored without permission.' },
+    { n:'02', title:'Agent categorizes', body:'Every 30 minutes, Mittens fetches unread emails, runs them through Nova Micro (trial) or Nova Pro (paid), and applies category rules autonomously.' },
+    { n:'03', title:'You get a report', body:"A clean digest hits your phone via ntfy.sh — meetings, security alerts, spam count. No noise, no missed emails, just signal." },
   ]
   return (
     <section id="how-it-works" style={{ padding:'120px 24px', maxWidth:1120, margin:'0 auto' }}>
@@ -185,7 +185,6 @@ function HowItWorks() {
       <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))', gap:20, marginTop:64 }}>
         {steps.map((s,i) => (
           <Card key={s.n} delay={i*0.1}>
-            <div style={{ fontSize:36, marginBottom:20 }}>{s.icon}</div>
             <div style={{ color:'#6E6C7E', fontSize:11, fontFamily:'monospace', letterSpacing:'0.12em', marginBottom:12 }}>{s.n}</div>
             <h3 style={{ color:'#F0EBE0', fontSize:20, fontWeight:500, marginBottom:12 }}>{s.title}</h3>
             <p style={{ color:'#6E6C7E', fontSize:14, lineHeight:1.7 }}>{s.body}</p>
@@ -287,33 +286,6 @@ function Pricing({ onCTA }) {
   )
 }
 
-function Testimonials() {
-  const quotes = [
-    { q:"Mittens caught a suspicious login email I would've missed. Flagged as SECURITY and pinged my phone immediately.", name:'Amara K.', role:'Freelance designer, Nairobi' },
-    { q:"I was drowning in newsletter noise. Now Mittens runs every 30 minutes and I actually see what matters.", name:'Brian O.', role:'Backend engineer, Lagos' },
-    { q:"The MCP agentic setup is genuinely impressive. It's not just filtering — it makes decisions. $4/month is nothing.", name:'Priya M.', role:'Product manager, Bangalore' },
-  ]
-  return (
-    <section style={{ background:'#0F0F18', padding:'120px 24px' }}>
-      <div style={{ maxWidth:1120, margin:'0 auto' }}>
-        <Eyebrow>What people say</Eyebrow>
-        <h2 data-reveal style={headingStyle('0.1s')}>Real inboxes.<br/>Real results.</h2>
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))', gap:16, marginTop:64 }}>
-          {quotes.map((q,i) => (
-            <Card key={q.name} delay={i*0.1} bg="#08080D">
-              <img src={logo} alt="" style={{ width:22, height:22, objectFit:'contain', marginBottom:20, opacity:0.45 }}/>
-              <p style={{ color:'#F0EBE0', fontSize:14, lineHeight:1.7, fontStyle:'italic', fontWeight:300, marginBottom:24 }}>"{q.q}"</p>
-              <div style={{ height:1, background:'#1E1E2E', marginBottom:20 }}/>
-              <div style={{ color:'#F0EBE0', fontSize:14, fontWeight:500 }}>{q.name}</div>
-              <div style={{ color:'#6E6C7E', fontSize:12, marginTop:4 }}>{q.role}</div>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
 function CTABanner({ onCTA }) {
   return (
     <section style={{ padding:'120px 24px', maxWidth:1120, margin:'0 auto' }}>
@@ -357,7 +329,6 @@ export default function App() {
       <HowItWorks/>
       <Features/>
       <Pricing onCTA={handleCTA}/>
-      <Testimonials/>
       <CTABanner onCTA={handleCTA}/>
       <Footer/>
     </div>

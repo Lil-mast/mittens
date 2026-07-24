@@ -3,7 +3,7 @@ import { requireAuth } from '../middleware/auth.js'
 import { checkPlan } from '../middleware/trial.js'
 import { fetchEmails } from '../lib/gmail.js'
 import { categorizeEmails } from '../lib/bedrock.js'
-import { supabase } from '../lib/supabase.js'
+import { supabaseAnon } from '../lib/supabase.js'
 
 const router = express.Router()
 
@@ -36,7 +36,7 @@ router.get('/categorize', requireAuth, checkPlan, async (req, res) => {
     }))
 
     // Log to DB
-    await supabase.from('EmailLog').insert(
+    await supabaseAnon.from('EmailLog').insert(
       result.map(e => ({
         userId: req.user.id,
         subject: e.subject,
@@ -70,7 +70,7 @@ router.get('/categorize', requireAuth, checkPlan, async (req, res) => {
 // Get email logs/history
 router.get('/logs', requireAuth, async (req, res) => {
   try {
-    const { data: logs } = await supabase
+    const { data: logs } = await supabaseAnon
       .from('EmailLog')
       .select('*')
       .eq('userId', req.user.id)

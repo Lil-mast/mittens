@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useCursor, useScrollReveal, useTypewriter, useCounter } from '../hooks/useAnimations'
-import api from '../lib/api'
+import { useCursor, useScrollReveal, useTypewriter, useCounter } from '../hooks/useanimations'
+import { useNavigate } from 'react-router-dom'
+import { supabase } from '../lib/supabase'
 import toast from 'react-hot-toast'
 
 // ── SVG Assets ──────────────────────────────────────────────────
@@ -23,8 +24,30 @@ const CatEyeIcon = () => (
   </svg>
 )
 
+const MailIcon = ({ size = 24, className = '' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+    <polyline points="22,6 12,13 2,6"/>
+  </svg>
+)
+
+const BotIcon = ({ size = 24, className = '' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+    <rect x="2" y="3" width="20" height="18" rx="2" ry="2"/>
+    <circle cx="9" cy="9" r="1"/>
+    <circle cx="15" cy="9" r="1"/>
+    <path d="M5 18h14M7 15v-3M17 15v-3"/>
+  </svg>
+)
+
+const PhoneIcon = ({ size = 24, className = '' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+  </svg>
+)
+
 // ── Navbar ──────────────────────────────────────────────────────
-const Navbar = ({ onConnect }) => {
+const Navbar = ({ onConnect, onSignUp }) => {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -65,6 +88,9 @@ const Navbar = ({ onConnect }) => {
 
         {/* CTA */}
         <div className="flex items-center gap-3">
+          <button onClick={onSignUp} className="btn-ghost text-sm">
+            Sign Up
+          </button>
           <button onClick={onConnect} className="btn-primary text-sm">
             Start free — 7 days
           </button>
@@ -201,19 +227,19 @@ const HowItWorks = () => {
       n: '01',
       title: 'Connect Gmail',
       body: 'One-click Google OAuth. Mittens gets read access to your inbox — nothing is stored without your permission.',
-      icon: '📬',
+      icon: <MailIcon size={32} />,
     },
     {
       n: '02',
       title: 'Agent takes over',
       body: 'Every 30 minutes, Mittens fetches your unread emails, runs them through Nova Micro (trial) or Nova Pro (paid), and categorizes each one with agentic precision.',
-      icon: '🤖',
+      icon: <BotIcon size={32} />,
     },
     {
       n: '03',
       title: 'You get a report',
       body: 'A clean digest lands on your phone via ntfy.sh — meetings, security alerts, spam count — no noise, just signal.',
-      icon: '📲',
+      icon: <PhoneIcon size={32} />,
     },
   ]
 
@@ -406,59 +432,6 @@ const Pricing = ({ onConnect }) => {
   )
 }
 
-// ── Testimonials ─────────────────────────────────────────────────
-const Testimonials = () => {
-  const quotes = [
-    {
-      text: "Mittens caught a suspicious login email I would've missed. It flagged it as SECURITY and pinged my phone immediately. Worth it for that alone.",
-      name: 'Amara K.',
-      role: 'Freelance designer, Nairobi',
-    },
-    {
-      text: "I was drowning in newsletter noise and missed two client emails. Now Mittens runs every 30 minutes and I actually see what matters.",
-      name: 'Brian O.',
-      role: 'Backend engineer, Lagos',
-    },
-    {
-      text: "The MCP agentic setup is genuinely impressive. It's not just filtering — it's making decisions. Four dollars a month is nothing for this.",
-      name: 'Priya M.',
-      role: 'Product manager, Bangalore',
-    },
-  ]
-
-  return (
-    <section className="py-32 bg-surface">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="eyebrow mb-6 reveal">What people say</div>
-        <h2 className="text-4xl md:text-5xl font-serif italic text-text mb-20 reveal reveal-delay-1">
-          Real inboxes.<br />Real results.
-        </h2>
-
-        <div className="grid md:grid-cols-3 gap-6">
-          {quotes.map((q, i) => (
-            <motion.div
-              key={q.name}
-              whileHover={{ y: -4 }}
-              transition={{ duration: 0.2 }}
-              className={`card-glow rounded-2xl p-7 bg-black reveal reveal-delay-${i + 1}`}
-            >
-              <PawIcon size={20} className="text-accent mb-6 opacity-60" />
-              <p className="text-text text-sm leading-relaxed mb-8 font-light italic">
-                "{q.text}"
-              </p>
-              <div className="section-divider mb-6" />
-              <div>
-                <div className="text-text text-sm font-medium">{q.name}</div>
-                <div className="text-muted text-xs mt-0.5">{q.role}</div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
 // ── CTA Banner ───────────────────────────────────────────────────
 const CtaBanner = ({ onConnect }) => (
   <section className="py-32 max-w-6xl mx-auto px-6 text-center">
@@ -516,15 +489,28 @@ const Footer = () => (
 export default function Landing() {
   useCursor()
   useScrollReveal()
+  const navigate = useNavigate()
 
   const handleConnect = async () => {
     try {
-      const res = await api.get('/auth/google')
-      window.location.href = res.data.url
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/success`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+          scopes: 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.labels https://www.googleapis.com/auth/contacts.readonly https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
+        },
+      })
+      if (error) throw error
     } catch {
       toast.error('Could not connect to Google. Try again.')
     }
   }
+
+  const handleSignUp = () => navigate('/auth/signup')
 
   return (
     <>
@@ -532,13 +518,12 @@ export default function Landing() {
       <div className="cursor-dot" />
       <div className="cursor-ring" />
 
-      <Navbar onConnect={handleConnect} />
+      <Navbar onConnect={handleConnect} onSignUp={handleSignUp} />
       <Hero onConnect={handleConnect} />
       <Marquee />
       <HowItWorks />
       <Features />
       <Pricing onConnect={handleConnect} />
-      <Testimonials />
       <CtaBanner onConnect={handleConnect} />
       <Footer />
     </>

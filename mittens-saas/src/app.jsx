@@ -1,9 +1,12 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
-import { AuthProvider, useAuth } from './context/AuthContext'
+import { AuthProvider, useAuth } from './context/authcontext'
 import Landing     from './pages/Landing'
 import Dashboard   from './pages/Dashboard'
 import AuthSuccess from './pages/AuthSuccess'
+import SignUp      from './pages/SignUp'
+import SignIn      from './pages/SignIn'
+import Payment     from './pages/Payment'
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth()
@@ -46,6 +49,9 @@ export default function App() {
             <PublicRoute><Landing /></PublicRoute>
           } />
           <Route path="/auth/success" element={<AuthSuccess />} />
+          <Route path="/auth/signup" element={<SignUp />} />
+          <Route path="/auth/signin" element={<SignIn />} />
+          <Route path="/payment" element={<Payment />} />
           <Route path="/dashboard" element={
             <ProtectedRoute><Dashboard /></ProtectedRoute>
           } />

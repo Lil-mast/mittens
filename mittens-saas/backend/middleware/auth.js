@@ -1,22 +1,22 @@
-import jwt from 'jsonwebtoken'
-import { supabase } from '../lib/supabase.js'
+import { supabaseAnon } from '../lib/supabase.js'
 
 export const requireAuth = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(' ')[1]
     if (!token) return res.status(401).json({ error: 'No token provided' })
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    const { data: { user }, error } = await supabaseAnon.auth.getUser(token)
+    if (error || !user) return res.status(401).json({ error: 'Invalid token' })
 
-    const { data: user, error } = await supabase
+    // Get user profile
+    const { data: profile } = await supabaseAnon
       .from('User')
       .select('*, Trial(*), Subscription(*)')
-      .eq('id', decoded.userId)
+      .eq('id', user.id)
       .single()
 
-    if (error || !user) return res.status(401).json({ error: 'User not found' })
-
-    req.user = user
+    req.user = profile || user
+    req.user.id = user.id
     next()
   } catch {
     return res.status(401).json({ error: 'Invalid token' })
