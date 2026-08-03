@@ -1,12 +1,14 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider, useAuth } from './context/authcontext'
+import { useCursor } from './hooks/useanimations'
 import Landing     from './pages/Landing'
 import Dashboard   from './pages/Dashboard'
 import AuthSuccess from './pages/AuthSuccess'
 import SignUp      from './pages/SignUp'
 import SignIn      from './pages/SignIn'
 import Payment     from './pages/Payment'
+import Onboarding  from './pages/Onboarding'
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth()
@@ -28,10 +30,36 @@ const PublicRoute = ({ children }) => {
   return user ? <Navigate to="/dashboard" replace /> : children
 }
 
+function AppContent() {
+  useCursor()
+  return (
+    <div className="app-shell">
+      <div className="cursor-dot" />
+      <div className="cursor-ring" />
+      <Routes>
+        <Route path="/" element={
+          <PublicRoute><Landing /></PublicRoute>
+        } />
+        <Route path="/auth/success" element={<AuthSuccess />} />
+        <Route path="/auth/signup" element={<SignUp />} />
+        <Route path="/auth/signin" element={<SignIn />} />
+        <Route path="/payment" element={<Payment />} />
+        <Route path="/onboarding" element={
+          <ProtectedRoute><Onboarding /></ProtectedRoute>
+        } />
+        <Route path="/dashboard" element={
+          <ProtectedRoute><Dashboard /></ProtectedRoute>
+        } />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </div>
+  )
+}
+
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
         <Toaster
           position="bottom-right"
           toastOptions={{
@@ -44,20 +72,8 @@ export default function App() {
             success: { iconTheme: { primary: '#FF8A3D', secondary: '#08080D' } },
           }}
         />
-        <Routes>
-          <Route path="/" element={
-            <PublicRoute><Landing /></PublicRoute>
-          } />
-          <Route path="/auth/success" element={<AuthSuccess />} />
-          <Route path="/auth/signup" element={<SignUp />} />
-          <Route path="/auth/signin" element={<SignIn />} />
-          <Route path="/payment" element={<Payment />} />
-          <Route path="/dashboard" element={
-            <ProtectedRoute><Dashboard /></ProtectedRoute>
-          } />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </BrowserRouter>
   )
 }

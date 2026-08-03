@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useCursor, useScrollReveal, useTypewriter, useCounter } from '../hooks/useanimations'
+import { useScrollReveal, useTypewriter, useCounter } from '../hooks/useanimations'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import toast from 'react-hot-toast'
@@ -487,7 +487,6 @@ const Footer = () => (
 
 // ── Landing Page ─────────────────────────────────────────────────
 export default function Landing() {
-  useCursor()
   useScrollReveal()
   const navigate = useNavigate()
 
@@ -514,10 +513,6 @@ export default function Landing() {
 
   return (
     <>
-      {/* Custom cursor */}
-      <div className="cursor-dot" />
-      <div className="cursor-ring" />
-
       <Navbar onConnect={handleConnect} onSignUp={handleSignUp} />
       <Hero onConnect={handleConnect} />
       <Marquee />

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import api from '../lib/api'
 import toast from 'react-hot-toast'
 
 export default function SignIn() {
@@ -10,6 +11,20 @@ export default function SignIn() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
+  const redirectAfterAuth = async () => {
+    const session = await supabase.auth.getSession()
+    const token = session?.data?.session?.access_token
+    if (token) {
+      localStorage.setItem('mittens_token', token)
+      const res = await api.get('/user/onboarding')
+      if (!res.data.completed) {
+        navigate('/onboarding')
+        return
+      }
+    }
+    navigate('/dashboard')
   }
 
   const handleSubmit = async (e) => {
@@ -26,7 +41,7 @@ export default function SignIn() {
       })
       if (error) throw error
       toast.success('Welcome back!')
-      navigate('/dashboard')
+      await redirectAfterAuth()
     } catch (err) {
       toast.error(err.message || 'Sign in failed. Try again.')
     } finally {

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../context/authcontext'
 import api from '../lib/api'
@@ -42,6 +43,7 @@ const StatCard = ({ label, value, sub }) => (
 
 export default function Dashboard() {
   const { user, plan, logout } = useAuth()
+  const [searchParams] = useSearchParams()
   const [emails, setEmails]     = useState([])
   const [grouped, setGrouped]   = useState({})
   const [loading, setLoading]   = useState(false)
@@ -49,9 +51,38 @@ export default function Dashboard() {
   const [ntfyTopic, setNtfyTopic] = useState('')
   const [savingNtfy, setSavingNtfy] = useState(false)
 
+  // Inbox review state
+  const [review, setReview]     = useState(null)
+  const [reviewLoading, setReviewLoading] = useState(false)
+  const [reviewDismissed, setReviewDismissed] = useState(false)
+
   const daysLeft = plan?.daysLeft || 0
   const isTrialExpired = plan?.status === 'expired'
   const isPro = plan?.status === 'pro'
+  const justOnboarded = searchParams.get('onboarded') === 'true'
+
+  // Auto-trigger inbox review on first load after onboarding
+  useEffect(() => {
+    if (justOnboarded || !review) {
+      fetchReview()
+    }
+  }, [justOnboarded, review])
+
+  const fetchReview = async () => {
+    setReviewLoading(true)
+    try {
+      const res = await api.get('/email/review')
+      if (res.data.needsConnection) {
+        toast('Connect Gmail to get your inbox review')
+      } else {
+        setReview(res.data)
+      }
+    } catch {
+      // Silent fail — review is optional
+    } finally {
+      setReviewLoading(false)
+    }
+  }
 
   const fetchEmails = async () => {
     setLoading(true)
@@ -63,6 +94,8 @@ export default function Dashboard() {
     } catch (err) {
       if (err.response?.status === 402) {
         toast.error('Trial expired — upgrade to continue')
+      } else if (err.response?.status === 400 && err.response?.data?.error === 'Gmail not connected') {
+        toast.error('Connect Gmail first to fetch emails')
       } else {
         toast.error('Failed to fetch emails')
       }
@@ -146,6 +179,85 @@ export default function Dashboard() {
           </motion.div>
         )}
 
+        {/* Inbox Review card (shown after onboarding or on first load) */}
+        {review && !reviewDismissed && !reviewLoading && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="price-card rounded-2xl p-6 mb-8 relative overflow-hidden"
+          >
+            <PawIcon size={120} className="absolute -bottom-6 -right-6 text-accent opacity-[0.04] pointer-events-none" />
+            <div className="flex items-start justify-between mb-5">
+              <div className="flex items-center gap-3">
+                <PawIcon size={20} className="text-accent mt-0.5" />
+                <div>
+                  <div className="text-text font-medium text-sm">Mittens reviewed your inbox</div>
+                  <div className="text-muted text-xs mt-0.5">First-pass analysis of your recent mail</div>
+                </div>
+              </div>
+              <button
+                onClick={() => setReviewDismissed(true)}
+                className="text-muted hover:text-text text-sm transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">
+              <div>
+                <div className="text-muted text-xs">Volume</div>
+                <div className="text-2xl font-serif italic text-text">{review.volume}</div>
+              </div>
+              <div>
+                <div className="text-muted text-xs">Unique senders</div>
+                <div className="text-2xl font-serif italic text-text">{review.uniqueSenders || 0}</div>
+              </div>
+              <div>
+                <div className="text-muted text-xs">Urgent items</div>
+                <div className="text-2xl font-serif italic text-accent">{review.urgent?.length || 0}</div>
+              </div>
+              <div>
+                <div className="text-muted text-xs">Suggestions</div>
+                <div className="text-2xl font-serif italic text-text">{review.suggestions?.length || 0}</div>
+              </div>
+            </div>
+
+            {review.urgent?.length > 0 && (
+              <div className="mb-4">
+                <div className="text-xs text-red-400 font-medium mb-2">Needs attention</div>
+                <div className="space-y-1.5">
+                  {review.urgent.map((item, i) => (
+                    <div key={i} className="flex items-center gap-2 text-xs text-muted">
+                      <span className="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
+                      <span className="truncate">{item.subject || item.from}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {review.suggestions?.length > 0 && (
+              <div>
+                <div className="text-xs text-muted font-medium mb-2">Suggested rules</div>
+                <div className="flex flex-wrap gap-2">
+                  {review.suggestions.map((s, i) => (
+                    <span key={i} className="text-xs bg-accent-soft border border-accent/20 text-accent px-2.5 py-1 rounded-full">
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </motion.div>
+        )}
+
+        {reviewLoading && (
+          <div className="card-glow rounded-2xl p-6 mb-8 bg-surface flex items-center gap-4">
+            <div className="animate-spin w-5 h-5 border-2 border-border border-t-accent rounded-full shrink-0" />
+            <div className="text-sm text-muted">Mittens is scanning your inbox…</div>
+          </div>
+        )}
+
         {/* Stats row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
           <StatCard label="Total emails" value={emails.length || '—'} />
@@ -179,7 +291,7 @@ export default function Dashboard() {
               <button
                 onClick={fetchEmails}
                 disabled={loading || isTrialExpired}
-                className="ml-auto btn-primary text-xs px-4 py-2 shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
+                className="ml-auto btn-primary text-xs px-4 py-2 shrink-0 disabled:opacity-40"
               >
                 {loading ? 'Fetching…' : '⟳ Fetch now'}
               </button>

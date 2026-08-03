@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import api from '../lib/api'
 import toast from 'react-hot-toast'
 
 export default function SignUp() {
@@ -10,6 +11,20 @@ export default function SignUp() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
+  const redirectAfterAuth = async () => {
+    const session = await supabase.auth.getSession()
+    const token = session?.data?.session?.access_token
+    if (token) {
+      localStorage.setItem('mittens_token', token)
+      const res = await api.get('/user/onboarding')
+      if (!res.data.completed) {
+        navigate('/onboarding')
+        return
+      }
+    }
+    navigate('/dashboard')
   }
 
   const handleSubmit = async (e) => {
@@ -29,8 +44,8 @@ export default function SignUp() {
         },
       })
       if (error) throw error
-      toast.success('Account created! Check your email to confirm.')
-      navigate('/auth/signin')
+      toast.success('Account created!')
+      await redirectAfterAuth()
     } catch (err) {
       toast.error(err.message || 'Sign up failed. Try again.')
     } finally {

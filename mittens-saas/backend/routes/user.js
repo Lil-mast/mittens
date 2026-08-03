@@ -53,4 +53,29 @@ router.patch('/ntfy', requireAuth, async (req, res) => {
   res.json({ success: true })
 })
 
+// Save onboarding preferences
+router.put('/onboarding', requireAuth, async (req, res) => {
+  const { preferences } = req.body
+
+  const { error } = await supabase
+    .from('User')
+    .update({
+      preferences,
+      onboardingCompleted: true,
+      updatedAt: new Date().toISOString(),
+    })
+    .eq('id', req.user.id)
+
+  if (error) return res.status(500).json({ error: error.message })
+  res.json({ success: true })
+})
+
+// Get onboarding status
+router.get('/onboarding', requireAuth, async (req, res) => {
+  res.json({
+    completed: req.user.onboardingCompleted ?? false,
+    preferences: req.user.preferences || null,
+  })
+})
+
 export default router

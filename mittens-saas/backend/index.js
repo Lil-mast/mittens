@@ -19,9 +19,11 @@ const PORT = process.env.PORT || 5000
 app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }))
 app.use(express.json())
 
+// Rate limiter - more lenient in development
+const isDev = process.env.NODE_ENV !== 'production'
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: isDev ? 1000 : 100,  // 1000 req/15min in dev, 100 in prod
   message: 'Too many requests, slow down.'
 })
 app.use(limiter)

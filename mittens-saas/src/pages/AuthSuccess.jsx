@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import api from '../lib/api'
 import toast from 'react-hot-toast'
 
 export default function AuthSuccess() {
@@ -24,6 +25,22 @@ export default function AuthSuccess() {
           const { error: sessionError } = await supabase.auth.exchangeCodeForSession(code)
           if (sessionError) throw sessionError
           toast.success('Welcome to Mittens!')
+
+          // Check if user needs onboarding
+          const session = await supabase.auth.getSession()
+          const token = session?.data?.session?.access_token
+          if (token) {
+            localStorage.setItem('mittens_token', token)
+            try {
+              const res = await api.get('/user/onboarding')
+              if (!res.data.completed) {
+                navigate('/onboarding')
+                return
+              }
+            } catch {
+              // If check fails, send to dashboard
+            }
+          }
           navigate('/dashboard')
         } catch (err) {
           toast.error('Failed to complete sign in')

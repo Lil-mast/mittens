@@ -7,19 +7,21 @@ datasource db {
 }
 
 model User {
-  id              String   @id @default(uuid())
-  email           String   @unique
-  name            String?
-  avatar          String?
-  googleId        String?  @unique
-  gmailToken      Json?
-  ntfyTopic       String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                  String   @id @default(uuid())
+  email               String   @unique
+  name                String?
+  avatar              String?
+  googleId            String?  @unique
+  gmailToken          Json?
+  ntfyTopic           String?
+  preferences         Json?
+  onboardingCompleted Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 
-  subscription    Subscription?
-  trial           Trial?
-  emailLogs       EmailLog[]
+  subscription        Subscription?
+  trial               Trial?
+  emailLogs           EmailLog[]
 }
 
 model Trial {
