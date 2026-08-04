@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
 import api from '../lib/api'
 import toast from 'react-hot-toast'
 
@@ -14,15 +13,14 @@ export default function SignIn() {
   }
 
   const redirectAfterAuth = async () => {
-    const session = await supabase.auth.getSession()
-    const token = session?.data?.session?.access_token
-    if (token) {
-      localStorage.setItem('mittens_token', token)
+    try {
       const res = await api.get('/user/onboarding')
       if (!res.data.completed) {
         navigate('/onboarding')
         return
       }
+    } catch {
+      // If check fails, send to dashboard
     }
     navigate('/dashboard')
   }
@@ -35,15 +33,14 @@ export default function SignIn() {
     }
     setLoading(true)
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      await api.post('/auth/signin', {
         email: formData.email,
         password: formData.password,
       })
-      if (error) throw error
       toast.success('Welcome back!')
       await redirectAfterAuth()
     } catch (err) {
-      toast.error(err.message || 'Sign in failed. Try again.')
+      toast.error(err.response?.data?.error || 'Sign in failed. Try again.')
     } finally {
       setLoading(false)
     }
@@ -51,13 +48,8 @@ export default function SignIn() {
 
   const handleGoogleSignIn = async () => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/success`,
-        },
-      })
-      if (error) throw error
+      const res = await api.get('/auth/google')
+      window.location.href = res.data.url
     } catch (err) {
       toast.error('Could not connect to Google. Try again.')
     }

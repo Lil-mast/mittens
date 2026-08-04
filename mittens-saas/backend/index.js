@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
 import rateLimit from 'express-rate-limit'
 
@@ -18,6 +19,7 @@ const PORT = process.env.PORT || 5000
 
 app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }))
 app.use(express.json())
+app.use(cookieParser())
 
 // Rate limiter - more lenient in development
 const isDev = process.env.NODE_ENV !== 'production'

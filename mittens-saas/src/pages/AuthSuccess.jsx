@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
 import api from '../lib/api'
 import toast from 'react-hot-toast'
 
@@ -10,7 +9,6 @@ export default function AuthSuccess() {
 
   useEffect(() => {
     const handleAuth = async () => {
-      const code = searchParams.get('code')
       const error = searchParams.get('error')
       const errorDescription = searchParams.get('error_description')
 
@@ -20,34 +18,24 @@ export default function AuthSuccess() {
         return
       }
 
-      if (code) {
+      try {
+        // Check if user needs onboarding via backend (cookies are set automatically)
+        const res = await api.get('/user/onboarding')
+        if (!res.data.completed) {
+          navigate('/onboarding')
+          return
+        }
+        toast.success('Welcome to Mittens!')
+        navigate('/dashboard')
+      } catch (err) {
+        // If onboarding check fails, try to get user to see if logged in
         try {
-          const { error: sessionError } = await supabase.auth.exchangeCodeForSession(code)
-          if (sessionError) throw sessionError
-          toast.success('Welcome to Mittens!')
-
-          // Check if user needs onboarding
-          const session = await supabase.auth.getSession()
-          const token = session?.data?.session?.access_token
-          if (token) {
-            localStorage.setItem('mittens_token', token)
-            try {
-              const res = await api.get('/user/onboarding')
-              if (!res.data.completed) {
-                navigate('/onboarding')
-                return
-              }
-            } catch {
-              // If check fails, send to dashboard
-            }
-          }
+          await api.get('/auth/me')
           navigate('/dashboard')
-        } catch (err) {
+        } catch {
           toast.error('Failed to complete sign in')
           navigate('/')
         }
-      } else {
-        navigate('/')
       }
     }
 

@@ -3,12 +3,37 @@ import { supabase, supabaseAnon } from '../lib/supabase.js'
 
 const router = express.Router()
 
+// Cookie options for httpOnly secure cookies
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax',
+  maxAge: 60 * 60 * 24 * 7 * 1000, // 7 days
+  path: '/',
+}
+
+// Helper to set auth cookies
+const setAuthCookies = (res, session) => {
+  if (session?.access_token) {
+    res.cookie('sb-access-token', session.access_token, cookieOptions)
+  }
+  if (session?.refresh_token) {
+    res.cookie('sb-refresh-token', session.refresh_token, cookieOptions)
+  }
+}
+
+// Helper to clear auth cookies
+const clearAuthCookies = (res) => {
+  res.clearCookie('sb-access-token', { ...cookieOptions, maxAge: 0 })
+  res.clearCookie('sb-refresh-token', { ...cookieOptions, maxAge: 0 })
+}
+
 // Supabase handles Google OAuth directly
 router.get('/google', (req, res) => {
   const { data, error } = supabaseAnon.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${process.env.CLIENT_URL}/auth/callback`,
+      redirectTo: `${process.env.SERVER_URL}/api/auth/callback`,
       scopes: 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.labels https://www.googleapis.com/auth/contacts.readonly https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
     },
   })
@@ -31,17 +56,19 @@ router.get('/callback', async (req, res) => {
     return res.redirect(`${process.env.CLIENT_URL}/auth/error`)
   }
 
-  // Store session and redirect
-  res.redirect(`${process.env.CLIENT_URL}/auth/success?session=${JSON.stringify(data.session)}`)
+  // Set auth cookies and redirect
+  setAuthCookies(res, data.session)
+  res.redirect(`${process.env.CLIENT_URL}/auth/success`)
 })
 
 // Get current user
 router.get('/me', async (req, res) => {
   try {
-    const authHeader = req.headers.authorization?.split(' ')[1]
-    if (!authHeader) return res.status(401).json({ error: 'No token' })
+    // Get token from cookie or Authorization header
+    const token = req.cookies?.['sb-access-token'] || req.headers.authorization?.split(' ')[1]
+    if (!token) return res.status(401).json({ error: 'No token' })
 
-    const { data: { user }, error } = await supabaseAnon.auth.getUser(authHeader)
+    const { data: { user }, error } = await supabaseAnon.auth.getUser(token)
     if (error || !user) return res.status(401).json({ error: 'Invalid token' })
 
     // Get user profile from database
@@ -75,6 +102,8 @@ router.post('/signup', async (req, res) => {
     }, { onConflict: 'id' })
   }
 
+  // Set auth cookies
+  setAuthCookies(res, data.session)
   res.json({ user: data.user, session: data.session })
 })
 
@@ -86,14 +115,18 @@ router.post('/signin', async (req, res) => {
   const { data, error } = await supabaseAnon.auth.signInWithPassword({ email, password })
   if (error) return res.status(400).json({ error: error.message })
 
+  // Set auth cookies
+  setAuthCookies(res, data.session)
   res.json({ user: data.user, session: data.session })
 })
 
 // Sign out
 router.post('/signout', async (req, res) => {
-  const authHeader = req.headers.authorization?.split(' ')[1]
-  if (authHeader) await supabaseAnon.auth.signOut()
+  const token = req.cookies?.['sb-access-token'] || req.headers.authorization?.split(' ')[1]
+  if (token) await supabaseAnon.auth.signOut()
 
+  // Clear auth cookies
+  clearAuthCookies(res)
   res.json({ success: true })
 })
 

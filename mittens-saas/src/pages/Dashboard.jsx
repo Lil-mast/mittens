@@ -42,7 +42,7 @@ const StatCard = ({ label, value, sub }) => (
 )
 
 export default function Dashboard() {
-  const { user, plan, logout } = useAuth()
+  const { user, plan, signOut } = useAuth()
   const [searchParams] = useSearchParams()
   const [emails, setEmails]     = useState([])
   const [grouped, setGrouped]   = useState({})
@@ -154,7 +154,7 @@ export default function Dashboard() {
                 Upgrade — $4/mo
               </button>
             )}
-            <button onClick={logout} className="text-muted text-sm hover:text-text transition-colors">
+            <button onClick={signOut} className="text-muted text-sm hover:text-text transition-colors">
               Sign out
             </button>
           </div>

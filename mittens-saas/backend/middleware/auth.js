@@ -2,7 +2,8 @@ import { supabaseAnon } from '../lib/supabase.js'
 
 export const requireAuth = async (req, res, next) => {
   try {
-    const token = req.headers.authorization?.split(' ')[1]
+    // Get token from cookie or Authorization header
+    const token = req.cookies?.['sb-access-token'] || req.headers.authorization?.split(' ')[1]
     if (!token) return res.status(401).json({ error: 'No token provided' })
 
     const { data: { user }, error } = await supabaseAnon.auth.getUser(token)

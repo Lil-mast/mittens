@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
 import api from '../lib/api'
 import toast from 'react-hot-toast'
 
@@ -14,15 +13,14 @@ export default function SignUp() {
   }
 
   const redirectAfterAuth = async () => {
-    const session = await supabase.auth.getSession()
-    const token = session?.data?.session?.access_token
-    if (token) {
-      localStorage.setItem('mittens_token', token)
+    try {
       const res = await api.get('/user/onboarding')
       if (!res.data.completed) {
         navigate('/onboarding')
         return
       }
+    } catch {
+      // If check fails, send to dashboard
     }
     navigate('/dashboard')
   }
@@ -35,19 +33,15 @@ export default function SignUp() {
     }
     setLoading(true)
     try {
-      const { error } = await supabase.auth.signUp({
+      await api.post('/auth/signup', {
         email: formData.email,
         password: formData.password,
-        options: {
-          data: { full_name: formData.name },
-          emailRedirectTo: `${window.location.origin}/auth/success`,
-        },
+        name: formData.name,
       })
-      if (error) throw error
       toast.success('Account created!')
       await redirectAfterAuth()
     } catch (err) {
-      toast.error(err.message || 'Sign up failed. Try again.')
+      toast.error(err.response?.data?.error || 'Sign up failed. Try again.')
     } finally {
       setLoading(false)
     }

@@ -4,17 +4,13 @@
   "type": "module",
   "private": true,
   "dependencies": {
-  "react-scripts": "*",
     "@aws-sdk/client-bedrock-runtime": "^3.1075.0",
     "@prisma/client": "^7.8.0",
     "@supabase/supabase-js": "^2.108.2",
-    "@testing-library/dom": "^10.4.1",
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.2",
-    "@testing-library/user-event": "^13.5.0",
     "autoprefixer": "^10.5.2",
     "axios": "^1.18.1",
     "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "crypto": "^1.0.1",
     "date-fns": "^4.4.0",
@@ -30,6 +26,7 @@
     "react-dom": "^19.2.7",
     "react-hot-toast": "^2.6.0",
     "react-router-dom": "^7.18.0",
+    "react-scripts": "*",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -42,8 +39,7 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "react-app"
     ]
   },
   "browserslist": {
@@ -59,9 +55,14 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^13.5.0",
     "@types/node": "^26.0.1",
     "concurrently": "^10.0.3",
     "dotenv": "^17.4.2",
+    "eslint-plugin-testing-library": "^7.1.1",
     "nodemon": "^3.1.14",
     "prisma": "^7.8.0",
     "tailwindcss": "^3.4.19",
