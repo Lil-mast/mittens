@@ -1,12 +1,19 @@
-import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import api from '../lib/api'
 import toast from 'react-hot-toast'
 
 export default function SignIn() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [formData, setFormData] = useState({ email: '', password: '' })
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (searchParams.get('error') === 'google_auth_failed') {
+      toast.error('Google sign-in failed. Please try again.')
+    }
+  }, [searchParams])
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -47,12 +54,7 @@ export default function SignIn() {
   }
 
   const handleGoogleSignIn = async () => {
-    try {
-      const res = await api.get('/auth/google')
-      window.location.href = res.data.url
-    } catch (err) {
-      toast.error('Could not connect to Google. Try again.')
-    }
+    window.location.href = `${api.defaults.baseURL}/auth/google`
   }
 
   return (
@@ -127,6 +129,10 @@ export default function SignIn() {
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
+
+        <p className="mt-4 text-right text-sm">
+          <Link to="/reset-password" className="text-accent hover:underline">Forgot password?</Link>
+        </p>
 
         <p className="mt-6 text-center text-sm text-muted">
           Don&apos;t have an account?{' '}

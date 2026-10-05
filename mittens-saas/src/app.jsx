@@ -7,8 +7,8 @@ import Dashboard   from './pages/Dashboard'
 import AuthSuccess from './pages/AuthSuccess'
 import SignUp      from './pages/SignUp'
 import SignIn      from './pages/SignIn'
-import Payment     from './pages/Payment'
 import Onboarding  from './pages/Onboarding'
+import ResetPassword from './pages/ResetPassword'
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth()
@@ -43,7 +43,7 @@ function AppContent() {
         <Route path="/auth/success" element={<AuthSuccess />} />
         <Route path="/auth/signup" element={<SignUp />} />
         <Route path="/auth/signin" element={<SignIn />} />
-        <Route path="/payment" element={<Payment />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/onboarding" element={
           <ProtectedRoute><Onboarding /></ProtectedRoute>
         } />
@@ -69,7 +69,7 @@ export default function App() {
               border: '1px solid #1E1E2E',
               fontSize: '13px',
             },
-            success: { iconTheme: { primary: '#FF8A3D', secondary: '#08080D' } },
+            success: { iconTheme: { primary: '#DC143C', secondary: '#08080D' } },
           }}
         />
         <AppContent />

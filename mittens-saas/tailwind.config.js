@@ -10,8 +10,8 @@ module.exports = {
         border:  '#1E1E2E',
         text:    '#F0EBE0',
         muted:   '#6E6C7E',
-        accent:  '#FF8A3D',
-        'accent-soft': 'rgba(255,138,61,0.08)',
+        accent:  '#DC143C',
+        'accent-soft': 'rgba(220,20,60,0.08)',
       },
       fontFamily: {
         serif:  ['Instrument Serif', 'Georgia', 'serif'],

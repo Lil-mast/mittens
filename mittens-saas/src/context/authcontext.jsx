@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
         const res = await api.get('/auth/me')
         const userData = res.data.user
         setUser(userData)
-        setPlan(computePlan(userData))
+        setPlan(computePlan(userData, res.data.model))
       } catch {
         setUser(null)
         setPlan(null)
@@ -28,24 +28,19 @@ export const AuthProvider = ({ children }) => {
     checkAuth()
   }, [])
 
-  const computePlan = (userData) => {
+  const computePlan = (userData, configuredModel) => {
     if (!userData) return null
-    const trial = userData.Trial
-    const subscription = userData.Subscription
+    const trial = userData.trial
 
     let planStatus = 'none'
     let daysLeft = 0
-    let model = 'amazon.nova-micro-v1:0'
+    const model = configuredModel || 'gpt-5.5'
 
-    if (subscription?.status === 'active') {
-      planStatus = 'pro'
-      model = 'amazon.nova-pro-v1:0'
-    } else if (trial?.isActive && new Date(trial.endsAt) > new Date()) {
+    if (trial?.isActive && new Date(trial.endsAt) > new Date()) {
       planStatus = 'trial'
       daysLeft = Math.ceil(
         (new Date(trial.endsAt) - new Date()) / (1000 * 60 * 60 * 24)
       )
-      model = 'amazon.nova-micro-v1:0'
     } else {
       planStatus = 'expired'
     }

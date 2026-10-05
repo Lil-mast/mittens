@@ -2,8 +2,8 @@ import express from 'express'
 import { requireAuth } from '../middleware/auth.js'
 import { checkPlan } from '../middleware/trial.js'
 import { fetchEmails } from '../lib/gmail.js'
-import { categorizeEmails, invokeModel } from '../lib/bedrock.js'
-import { supabaseAnon } from '../lib/supabase.js'
+import { categorizeEmails, invokeModel } from '../lib/agentrouter.js'
+import { prisma } from '../lib/prisma.js'
 
 const router = express.Router()
 
@@ -46,7 +46,7 @@ ${emailList}
 
 Respond ONLY as JSON, no markdown: {"volume":0,"uniqueSenders":0,"topSenders":[],"urgent":[],"suggestions":[]}`
 
-    const raw = await invokeModel(prompt, req.plan)
+    const raw = await invokeModel(prompt)
     let review
     try {
       const clean = raw.replace(/```json|```/g, '').trim()
@@ -87,8 +87,8 @@ router.get('/categorize', requireAuth, checkPlan, async (req, res) => {
       return res.json({ emails: [], categories: {}, message: 'No emails found' })
     }
 
-    // Categorize with Bedrock
-    const categorized = await categorizeEmails(emails, req.plan)
+    // Categorize through Agent Router
+    const categorized = await categorizeEmails(emails)
 
     // Merge results
     const result = emails.map((email, i) => ({
@@ -97,15 +97,15 @@ router.get('/categorize', requireAuth, checkPlan, async (req, res) => {
     }))
 
     // Log to DB
-    await supabaseAnon.from('EmailLog').insert(
-      result.map(e => ({
+    await prisma.emailLog.createMany({
+      data: result.map(e => ({
         userId: req.user.id,
         subject: e.subject,
         sender: e.from,
         category: e.category,
-        familiarity: e.familiarity
-      }))
-    )
+        familiarity: e.familiarity,
+      })),
+    })
 
     // Group by category
     const grouped = result.reduce((acc, email) => {
@@ -131,13 +131,11 @@ router.get('/categorize', requireAuth, checkPlan, async (req, res) => {
 // Get email logs/history
 router.get('/logs', requireAuth, async (req, res) => {
   try {
-    const { data: logs } = await supabaseAnon
-      .from('EmailLog')
-      .select('*')
-      .eq('userId', req.user.id)
-      .order('processedAt', { ascending: false })
-      .limit(50)
-
+    const logs = await prisma.emailLog.findMany({
+      where: { userId: req.user.id },
+      orderBy: { processedAt: 'desc' },
+      take: 50,
+    })
     res.json({ logs })
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch logs' })

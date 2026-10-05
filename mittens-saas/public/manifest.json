@@ -1,7 +1,7 @@
 {
   "short_name": "Mittens",
   "name": "Mittens AGI — AI Email Agent",
-  "description": "Your inbox, handled. While you sleep. AI-powered email management powered by AWS Bedrock.",
+  "description": "Your inbox, handled. While you sleep. AI-powered email management powered by Agent Router.",
   "icons": [
     {
       "src": "favicon.ico",
@@ -22,7 +22,7 @@
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "theme_color": "#FF8A3D",
+  "theme_color": "#DC143C",
   "background_color": "#08080D",
   "categories": ["productivity", "utilities"],
   "lang": "en"

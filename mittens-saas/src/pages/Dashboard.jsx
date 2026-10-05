@@ -58,7 +58,6 @@ export default function Dashboard() {
 
   const daysLeft = plan?.daysLeft || 0
   const isTrialExpired = plan?.status === 'expired'
-  const isPro = plan?.status === 'pro'
   const justOnboarded = searchParams.get('onboarded') === 'true'
 
   // Auto-trigger inbox review on first load after onboarding
@@ -93,7 +92,7 @@ export default function Dashboard() {
       toast.success(`Fetched ${res.data.total} emails`)
     } catch (err) {
       if (err.response?.status === 402) {
-        toast.error('Trial expired — upgrade to continue')
+        toast.error('Your seven-day trial has ended')
       } else if (err.response?.status === 400 && err.response?.data?.error === 'Gmail not connected') {
         toast.error('Connect Gmail first to fetch emails')
       } else {
@@ -116,15 +115,6 @@ export default function Dashboard() {
     }
   }
 
-  const handleUpgrade = async () => {
-    try {
-      const res = await api.post('/subscription/initialize')
-      window.location.href = res.data.authorizationUrl
-    } catch {
-      toast.error('Could not start payment')
-    }
-  }
-
   const displayEmails = activeTab === 'all' ? emails : (grouped[activeTab] || [])
 
   return (
@@ -140,19 +130,10 @@ export default function Dashboard() {
           </div>
 
           <div className="flex items-center gap-4">
-            {/* Plan badge */}
-            {isPro && (
-              <span className="text-xs bg-accent text-black px-2.5 py-1 rounded-full font-semibold">Pro</span>
-            )}
             {plan?.status === 'trial' && (
               <span className="text-xs text-accent bg-accent-soft border border-accent/20 px-2.5 py-1 rounded-full">
                 Trial · {daysLeft}d left
               </span>
-            )}
-            {isTrialExpired && (
-              <button onClick={handleUpgrade} className="btn-primary text-xs px-4 py-2">
-                Upgrade — $4/mo
-              </button>
             )}
             <button onClick={signOut} className="text-muted text-sm hover:text-text transition-colors">
               Sign out
@@ -171,11 +152,8 @@ export default function Dashboard() {
           >
             <div>
               <div className="text-text font-medium mb-1">Your free trial has ended</div>
-              <div className="text-muted text-sm">Upgrade to Mittens Pro for $4/month to continue.</div>
+              <div className="text-muted text-sm">Email processing is unavailable after the trial period.</div>
             </div>
-            <button onClick={handleUpgrade} className="btn-primary">
-              Upgrade now →
-            </button>
           </motion.div>
         )}
 
@@ -377,16 +355,9 @@ export default function Dashboard() {
             <div className="card-glow rounded-2xl p-6 bg-surface">
               <div className="text-text font-medium mb-4 text-sm">Active model</div>
               <div className="text-accent font-mono text-xs bg-accent-soft border border-accent/20 px-3 py-2 rounded-lg">
-                {plan?.model || 'amazon.nova-micro-v1:0'}
+                {plan?.model || 'Agent Router'}
               </div>
-              {!isPro && (
-                <div className="mt-4 text-muted text-xs leading-relaxed">
-                  Trial uses Nova Micro.{' '}
-                  <button onClick={handleUpgrade} className="text-accent hover:underline">
-                    Upgrade to Nova Pro →
-                  </button>
-                </div>
-              )}
+              <div className="mt-4 text-muted text-xs leading-relaxed">One model is used throughout your trial.</div>
             </div>
 
             {/* Category breakdown */}

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useScrollReveal, useTypewriter, useCounter } from '../hooks/useanimations'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import api from '../lib/api'
 import toast from 'react-hot-toast'
 
 // ── SVG Assets ──────────────────────────────────────────────────
@@ -18,8 +18,8 @@ const PawIcon = ({ size = 24, className = '' }) => (
 
 const CatEyeIcon = () => (
   <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-    <ellipse cx="16" cy="16" rx="14" ry="14" stroke="#FF8A3D" strokeWidth="1.5"/>
-    <ellipse cx="16" cy="16" rx="4" ry="10" fill="#FF8A3D" className="animate-blink"/>
+    <ellipse cx="16" cy="16" rx="14" ry="14" stroke="#DC143C" strokeWidth="1.5"/>
+    <ellipse cx="16" cy="16" rx="4" ry="10" fill="#DC143C" className="animate-blink"/>
     <circle cx="14" cy="13" r="1.5" fill="rgba(255,255,255,0.6)"/>
   </svg>
 )
@@ -75,7 +75,7 @@ const Navbar = ({ onConnect, onSignUp }) => {
 
         {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-8">
-          {['Features', 'How it works', 'Pricing'].map(link => (
+          {['Features', 'How it works', 'Free trial'].map(link => (
             <a
               key={link}
               href={`#${link.toLowerCase().replace(/\s/g, '-')}`}
@@ -203,7 +203,7 @@ const Hero = ({ onConnect }) => {
 
 // ── Marquee ─────────────────────────────────────────────────────
 const Marquee = () => {
-  const items = ['Gmail', 'AWS Bedrock', 'MCP Protocol', 'Nova Pro', 'ntfy.sh', 'OpenClaw', 'Supabase', 'Paystack', 'OAuth 2.0']
+  const items = ['Gmail', 'Agent Router', 'MCP Protocol', 'ntfy.sh', 'OpenClaw', 'MariaDB', 'Google OAuth']
   const doubled = [...items, ...items]
 
   return (
@@ -232,7 +232,7 @@ const HowItWorks = () => {
     {
       n: '02',
       title: 'Agent takes over',
-      body: 'Every 30 minutes, Mittens fetches your unread emails, runs them through Nova Micro (trial) or Nova Pro (paid), and categorizes each one with agentic precision.',
+      body: 'Mittens fetches your unread emails, sends them through your configured Agent Router model, and categorizes each one.',
       icon: <BotIcon size={32} />,
     },
     {
@@ -284,7 +284,7 @@ const Features = () => {
     },
     {
       title: 'Smart categorization',
-      body: 'Six categories: MEETING, EVENT, SECURITY, WORK, PERSONAL, SPAM. Each email gets a category and a familiarity tag (KNOWN vs UNKNOWN sender) powered by Nova Pro.',
+      body: 'Six categories: MEETING, EVENT, SECURITY, WORK, PERSONAL, SPAM. Each email gets a category and a familiarity tag (KNOWN vs UNKNOWN sender) powered by Agent Router.',
       tag: 'AI',
     },
     {
@@ -299,8 +299,8 @@ const Features = () => {
     },
     {
       title: 'Two-model strategy',
-      body: 'Nova Micro for the 7-day free trial — fast, cheap, capable. Nova Pro for paid plans — full reasoning, better classification accuracy, longer context.',
-      tag: 'AWS Bedrock',
+      body: 'Use one configurable Agent Router model for inbox review and email categorization throughout the seven-day trial.',
+      tag: 'Agent Router',
     },
   ]
 
@@ -343,29 +343,17 @@ const Features = () => {
 
 // ── Pricing ──────────────────────────────────────────────────────
 const Pricing = ({ onConnect }) => {
-  const included = [
-    'Nova Pro model (full reasoning)',
-    'Gmail read + modify access',
-    'MCP agentic functions',
-    'Email categorization — 6 categories',
-    'Security alert priority notifications',
-    'Daily inbox reports via ntfy.sh',
-    'Custom query intervals',
-    'Sender familiarity tagging',
-  ]
-
   return (
-    <section id="pricing" className="py-32 max-w-6xl mx-auto px-6">
-      <div className="eyebrow mb-6 reveal">Pricing</div>
+    <section id="free-trial" className="py-32 max-w-6xl mx-auto px-6">
+      <div className="eyebrow mb-6 reveal">Free trial</div>
       <h2 className="text-4xl md:text-5xl font-serif italic text-text mb-6 reveal reveal-delay-1">
-        One plan. One price.<br />Everything included.
+        Your inbox, handled.<br />Try it free for seven days.
       </h2>
       <p className="text-muted mb-20 reveal reveal-delay-2">
-        Start with a 7-day free trial on Nova Micro. No card required.
+        No payment method required. Create an account to get started.
       </p>
 
-      <div className="grid md:grid-cols-2 gap-8 items-start">
-        {/* Trial card */}
+      <div className="max-w-xl mx-auto">
         <motion.div
           whileHover={{ y: -4 }}
           transition={{ duration: 0.2 }}
@@ -373,12 +361,12 @@ const Pricing = ({ onConnect }) => {
         >
           <div className="text-muted text-xs uppercase tracking-widest mb-4 font-mono">Free trial</div>
           <div className="text-4xl font-serif italic text-text mb-2">7 days</div>
-          <div className="text-muted text-sm mb-8">Nova Micro · No card needed</div>
+          <div className="text-muted text-sm mb-8">One configured Agent Router model · No card needed</div>
 
           <div className="section-divider mb-8" />
 
           <ul className="space-y-3 mb-10">
-            {['Gmail integration', 'Email categorization', 'ntfy.sh reports', 'Basic security alerts'].map(item => (
+            {['Gmail integration', 'Email categorization', 'ntfy.sh reports', 'Security alerts'].map(item => (
               <li key={item} className="flex items-center gap-3 text-sm text-muted">
                 <span className="text-accent text-xs">◆</span>
                 {item}
@@ -391,42 +379,6 @@ const Pricing = ({ onConnect }) => {
           </button>
         </motion.div>
 
-        {/* Pro card */}
-        <motion.div
-          whileHover={{ y: -4 }}
-          transition={{ duration: 0.2 }}
-          className="price-card rounded-2xl p-8 reveal reveal-delay-1"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div className="text-accent text-xs uppercase tracking-widest font-mono">Mittens Pro</div>
-            <span className="text-xs bg-accent text-black px-2.5 py-1 rounded-full font-semibold">Most popular</span>
-          </div>
-          <div className="flex items-baseline gap-2 mb-2">
-            <span className="text-5xl font-serif italic text-text">$4</span>
-            <span className="text-muted text-sm">/ month</span>
-          </div>
-          <div className="text-muted text-sm mb-8">Nova Pro · Cancel anytime</div>
-
-          <div className="section-divider mb-8" />
-
-          <ul className="space-y-3 mb-10">
-            {included.map(item => (
-              <li key={item} className="flex items-center gap-3 text-sm text-text">
-                <span className="text-accent text-xs">◆</span>
-                {item}
-              </li>
-            ))}
-          </ul>
-
-          <button onClick={onConnect} className="btn-primary w-full justify-center text-base py-4">
-            <PawIcon size={16} />
-            Get started — $4/mo
-          </button>
-
-          <p className="text-center text-muted text-xs mt-4">
-            Billed monthly via Paystack · KES ~520/month
-          </p>
-        </motion.div>
       </div>
     </section>
   )
@@ -447,7 +399,7 @@ const CtaBanner = ({ onConnect }) => (
         Your inbox won't<br />manage itself.
       </h2>
       <p className="text-muted mb-10 max-w-md mx-auto">
-        Let Mittens handle it. 7 days free, then $4/month. No contracts, no noise.
+        Let Mittens handle it. Start with seven days of access. No payment required.
       </p>
       <button onClick={onConnect} className="btn-primary text-base px-10 py-4">
         <PawIcon size={16} />
@@ -492,18 +444,7 @@ export default function Landing() {
 
   const handleConnect = async () => {
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/success`,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
-          scopes: 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.labels https://www.googleapis.com/auth/contacts.readonly https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
-        },
-      })
-      if (error) throw error
+      window.location.href = `${api.defaults.baseURL}/auth/google`
     } catch {
       toast.error('Could not connect to Google. Try again.')
     }

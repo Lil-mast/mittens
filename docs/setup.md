@@ -1,231 +1,93 @@
-# Mittens project setup guide
+# Setup
 
-This guide covers how to set up the project in this repository and run it locally in development.
+Mittens uses a React frontend, an Express API, Prisma with MariaDB, Google OAuth for sign-in and Gmail access, and Agent Router for model requests.
 
-## Repository structure
+## Requirements
 
-This repo is a workspace wrapper around the main app in `mittens-saas/`.
+- Node.js 20.19+ and npm or pnpm
+- MariaDB 10.0+ and an empty database
+- Google Cloud OAuth credentials with Gmail API enabled
+- An Agent Router API key and a model available to that key
+- An SMTP service for password recovery emails
 
-- `mittens-saas/` — application source code
-- `mittens-saas/src/` — React frontend
-- `mittens-saas/backend/` — Express API
-- `mittens-saas/prisma/` — Prisma schema and database model
-- `config/openclaw.template.json` — local OpenClaw configuration template
-- `agent/agent.md` — agent instructions for Gmail/email handling
+## Install and configure
 
-## Prerequisites
-
-You need all of the following configured before the app can run correctly:
-
-- Node.js 18+
-- npm or pnpm
-- A Postgres database or Supabase Postgres instance
-- A Supabase project
-- A Google Cloud OAuth client for Gmail access
-- An AWS account with access to Amazon Bedrock
-- A Paystack account and secret key
-
-## 1) Install dependencies
-
-From the project root:
-
-```bash
-cd mittens-saas
-npm install
-```
-
-Or with pnpm:
-
-```bash
-cd mittens-saas
-pnpm install
-```
-
-## 2) Create your environment file
-
-Create a `.env` file in `mittens-saas/`:
+From `mittens-saas/`, install dependencies and create your local environment file:
 
 ```bash
 cp .env.example .env
 ```
 
-If there is no `.env.example` in that folder, create the file manually with the values below.
+The example contains local development values. Replace credentials and database details before starting the app. Never commit `.env` or put server secrets in a `REACT_APP_` variable. The complete template is [mittens-saas/.env.example](../mittens-saas/.env.example).
 
-## 3) Required environment variables
+### Variable reference
 
-Add the following variables to `mittens-saas/.env`.
+| Variable | Required | Purpose |
+| --- | --- | --- |
+| `REACT_APP_API_URL` | Yes | Browser address of the API, including `/api`. |
+| `CLIENT_URL` | Yes | Frontend origin for CORS and OAuth/password-reset redirects. |
+| `PORT` | No | API port; defaults to `5000`. |
+| `NODE_ENV` | No | Set to `production` for secure production cookies and production rate limits. |
+| `DATABASE_URL` | Yes | MariaDB URL in `mysql://user:password@host:3306/database` form. URL-encode special characters in credentials. |
+| `SESSION_SECRET` | Yes | Private random signing key for session cookies. Generate with `openssl rand -base64 32`. |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Yes | Google OAuth application credentials. |
+| `GOOGLE_REDIRECT_URI` | Yes | Backend callback URL registered in Google Cloud. |
+| `AGENTROUTER_API_KEY` | Yes | Server-side Agent Router key. |
+| `AGENTROUTER_BASE_URL` | No | Defaults to `https://co.agentrouter.org/v1`. |
+| `AGENTROUTER_MODEL` | No | Defaults to `gpt-5.5`; choose a model available to your Agent Router key. |
+| `SMTP_URL` | For password recovery | SMTP connection URL used to deliver reset links. |
+| `MAIL_FROM` | No | Sender shown on reset emails; defaults to a local placeholder. |
 
-### Frontend variables
+Keep Agent Router, Google client-secret, SMTP, database, and session credentials on the backend. Do not prefix them with `REACT_APP_`.
 
-```env
-REACT_APP_API_URL=http://localhost:5000/api
-REACT_APP_SUPABASE_URL=https://your-project.supabase.co
-REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
+When updating an existing `.env`, remove the old `REACT_APP_SUPABASE_URL`, `REACT_APP_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `PAYSTACK_SECRET_KEY` entries. They are no longer used.
 
-### Backend variables
+In Google Cloud, add the exact `GOOGLE_REDIRECT_URI` as an authorized redirect URI and enable the Gmail API. OAuth requests Gmail read, modify, labels, contacts, profile, and email scopes.
 
-```env
-SERVER_URL=http://localhost:5000
-CLIENT_URL=http://localhost:3000
-NODE_ENV=development
-PORT=5000
-```
-
-### Supabase
-
-```env
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-```
-
-### Database
-
-```env
-DATABASE_URL=postgresql://user:password@host:5432/dbname
-```
-
-### Gmail / Google OAuth
-
-```env
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-GOOGLE_REDIRECT_URI=http://localhost:5000/api/auth/callback
-```
-
-### AWS Bedrock
-
-```env
-AWS_REGION=us-east-1
-AWS_ACCESS_KEY_ID=your_aws_access_key_id
-AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key
-```
-
-### Paystack
-
-```env
-PAYSTACK_SECRET_KEY=your_paystack_secret_key
-```
-
-## 4) Set up the database
-
-The app uses Prisma with a Postgres datasource.
-
-Run:
+## Initialize and run
 
 ```bash
-cd mittens-saas
 npx prisma generate
 npx prisma db push
-```
-
-This creates the tables described in `prisma/schema.prisma`.
-
-## 5) Start the app
-
-Run the development stack:
-
-```bash
-cd mittens-saas
 npm run dev
 ```
 
-This will start:
+The frontend uses `http://localhost:3000`; the API uses `http://localhost:5000`. For production, use HTTPS and set `CLIENT_URL` and the Google redirect URI to the deployed origins.
 
-- Frontend on http://localhost:3000
-- Backend API on http://localhost:5000
+## Migrate an existing Supabase export
 
-If you want to run them separately:
+The existing Supabase password hashes are not imported. Users can regain access by signing in with the same verified Google account or by using the password reset flow; configure SMTP for reset emails.
 
-```bash
-npm start
-npm run server
+In the Supabase SQL editor, run this query and save the returned JSON as `supabase-export.json`. Then apply the MariaDB schema before importing:
+
+```sql
+select json_build_object(
+  'User', coalesce((select json_agg(row_to_json(u)) from public."User" u), '[]'::json),
+  'Trial', coalesce((select json_agg(row_to_json(t)) from public."Trial" t), '[]'::json),
+  'EmailLog', coalesce((select json_agg(row_to_json(e)) from public."EmailLog" e), '[]'::json)
+);
 ```
 
-## 6) Verify the app works
-
-Check the backend health endpoint:
-
-```bash
-curl http://localhost:5000/api/health
-```
-
-Expected result:
+The importer expects these table arrays:
 
 ```json
-{ "status": "ok", "agent": "Mittens", "version": "1.0.0" }
+{
+  "User": [],
+  "Trial": [],
+  "EmailLog": []
+}
 ```
-
-## 7) Configure external services
-
-### Supabase
-
-- Create a Supabase project.
-- Enable authentication as needed.
-- Use the anon key in the frontend and the service role key on the server.
-- Make sure your app redirect URLs include the OAuth callback URL.
-
-### Google OAuth
-
-- Create a project in Google Cloud Console.
-- Configure OAuth credentials.
-- Add the redirect URI:
-
-```text
-http://localhost:5000/api/auth/callback
-```
-
-- Enable Gmail API access for the project.
-
-### AWS Bedrock
-
-- Ensure your AWS IAM user or role can call Bedrock Runtime.
-- Use the region matching your model access.
-- Confirm the model IDs in the code are available in your account.
-
-### Paystack
-
-- Create a Paystack secret key.
-- Configure your callback/redirect flow using `CLIENT_URL` and your frontend payment route.
-
-## Project notes
-
-- The frontend uses React + Create React App.
-- The backend is Express and exposes routes under `/api`.
-- Auth is handled primarily through Supabase.
-- Gmail OAuth flows are generated in the backend.
-- Bedrock usage is configured from the `backend/lib/bedrock.js` integration.
-- Subscription initialization is configured in `backend/lib/paystack.js`.
-
-## Troubleshooting
-
-### CORS errors
-
-Make sure `CLIENT_URL` and `SERVER_URL` match your local dev ports and the backend allows that origin.
-
-### Auth redirect issues
-
-Check:
-
-- `GOOGLE_REDIRECT_URI`
-- `SERVER_URL`
-- `CLIENT_URL`
-- Supabase redirect configuration
-
-### Prisma connection errors
-
-Check that `DATABASE_URL` points to a live Postgres instance and the database is reachable from your environment.
-
-### Bedrock access errors
-
-Verify the AWS credentials and that the chosen region/model is available for your account.
-
-## Production build
-
-To build the production frontend bundle:
 
 ```bash
-cd mittens-saas
-npm run build
+node scripts/import-supabase-export.js /path/to/supabase-export.json
 ```
 
-The generated static files can then be served from the Express backend if the build directory exists.
+The importer preserves profile fields, Gmail tokens, onboarding settings, active trial dates, and email history. It does not import subscriptions or old passwords.
+
+## Behavior notes
+
+- New accounts start a seven-day trial at signup. Email processing is blocked after expiry.
+- The model ID is configured by `AGENTROUTER_MODEL`; the API key and endpoint are only used by the backend.
+- Google OAuth sign-in also stores the granted Gmail tokens for email access.
+- Password recovery tokens expire after one hour and can only be used once.
+- The backend health endpoint is `GET /api/health`.

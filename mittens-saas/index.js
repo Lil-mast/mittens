@@ -5,7 +5,6 @@ import rateLimit from 'express-rate-limit'
 
 import authRoutes from './routes/auth.js'
 import emailRoutes from './routes/email.js'
-import subscriptionRoutes from './routes/subscription.js'
 import userRoutes from './routes/user.js'
 
 dotenv.config()
@@ -25,7 +24,6 @@ app.use(limiter)
 
 app.use('/api/auth', authRoutes)
 app.use('/api/email', emailRoutes)
-app.use('/api/subscription', subscriptionRoutes)
 app.use('/api/user', userRoutes)
 
 app.get('/api/health', (req, res) => {

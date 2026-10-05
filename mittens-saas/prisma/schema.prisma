@@ -3,12 +3,15 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
 }
 
 model User {
   id                  String   @id @default(uuid())
   email               String   @unique
+  passwordHash        String?
+  passwordResetToken  String?  @unique
+  passwordResetExpiry DateTime?
   name                String?
   avatar              String?
   googleId            String?  @unique
@@ -19,7 +22,6 @@ model User {
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
-  subscription        Subscription?
   trial               Trial?
   emailLogs           EmailLog[]
 }
@@ -30,24 +32,9 @@ model Trial {
   startedAt   DateTime @default(now())
   endsAt      DateTime
   isActive    Boolean  @default(true)
-  model       String   @default("amazon.nova-micro-v1:0")
+  model       String
 
   user        User     @relation(fields: [userId], references: [id])
-}
-
-model Subscription {
-  id                  String   @id @default(uuid())
-  userId              String   @unique
-  paystackCustomerId  String?
-  paystackSubCode     String?
-  plan                String   @default("pro")
-  model               String   @default("amazon.nova-pro-v1:0")
-  status              String   @default("active")
-  currentPeriodEnd    DateTime?
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
-
-  user                User     @relation(fields: [userId], references: [id])
 }
 
 model EmailLog {

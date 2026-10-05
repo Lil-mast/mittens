@@ -1,81 +1,42 @@
 import express from 'express'
 import { requireAuth } from '../middleware/auth.js'
-import { supabase } from '../lib/supabase.js'
+import { prisma } from '../lib/prisma.js'
 
 const router = express.Router()
 
-// Get user profile + plan status
 router.get('/profile', requireAuth, async (req, res) => {
-  const user = req.user
-  const trial = user.Trial
-  const subscription = user.Subscription
-
-  let planStatus = 'none'
-  let daysLeft = 0
-  let model = 'amazon.nova-micro-v1:0'
-
-  if (subscription?.status === 'active') {
-    planStatus = 'pro'
-    model = 'amazon.nova-pro-v1:0'
-  } else if (trial?.isActive && new Date(trial.endsAt) > new Date()) {
-    planStatus = 'trial'
-    daysLeft = Math.ceil(
-      (new Date(trial.endsAt) - new Date()) / (1000 * 60 * 60 * 24)
-    )
-    model = 'amazon.nova-micro-v1:0'
-  } else {
-    planStatus = 'expired'
-  }
-
+  const trial = req.user.trial
+  const active = Boolean(trial?.isActive && trial.endsAt > new Date())
   res.json({
     user: {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      avatar: user.avatar
+      id: req.user.id,
+      email: req.user.email,
+      name: req.user.name,
+      avatar: req.user.avatar,
     },
     plan: {
-      status: planStatus,
-      daysLeft,
-      model
-    }
+      status: active ? 'trial' : 'expired',
+      daysLeft: active ? Math.ceil((trial.endsAt - new Date()) / 86400000) : 0,
+      model: process.env.AGENTROUTER_MODEL || 'gpt-5.5',
+    },
   })
 })
 
-// Update ntfy topic
 router.patch('/ntfy', requireAuth, async (req, res) => {
-  const { ntfyTopic } = req.body
-  await supabase
-    .from('User')
-    .update({ ntfyTopic, updatedAt: new Date().toISOString() })
-    .eq('id', req.user.id)
-
+  await prisma.user.update({ where: { id: req.user.id }, data: { ntfyTopic: req.body.ntfyTopic } })
   res.json({ success: true })
 })
 
-// Save onboarding preferences
 router.put('/onboarding', requireAuth, async (req, res) => {
-  const { preferences } = req.body
-
-  const { error } = await supabase
-    .from('User')
-    .update({
-      preferences,
-      onboardingCompleted: true,
-      updatedAt: new Date().toISOString(),
-    })
-    .eq('id', req.user.id)
-
-  if (error) return res.status(500).json({ error: error.message })
+  await prisma.user.update({
+    where: { id: req.user.id },
+    data: { preferences: req.body.preferences, onboardingCompleted: true },
+  })
   res.json({ success: true })
 })
 
-// Get onboarding status
-router.get('/onboarding', requireAuth, async (req, res) => {
-  res.json({
-    completed: req.user.onboardingCompleted ?? false,
-    preferences: req.user.preferences || null,
-  })
+router.get('/onboarding', requireAuth, (req, res) => {
+  res.json({ completed: req.user.onboardingCompleted, preferences: req.user.preferences || null })
 })
 
 export default router

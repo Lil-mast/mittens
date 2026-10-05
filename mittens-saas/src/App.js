@@ -4,11 +4,11 @@ import './index.css'
 
 const MittensLogo = ({ size = 36, showText = true }) => (
   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-    <img src={logo} alt="Mittens AGI" style={{ width: size, height: size, objectFit: 'contain', filter: 'brightness(1.1) drop-shadow(0 0 8px rgba(255,138,61,0.3))' }} />
+    <img src={logo} alt="Mittens AGI" style={{ width: size, height: size, objectFit: 'contain', filter: 'brightness(1.1) drop-shadow(0 0 8px rgba(220,20,60,0.3))' }} />
     {showText && (
       <div style={{ lineHeight: 1 }}>
         <div style={{ fontFamily: "'Inter',sans-serif", fontWeight: 700, fontSize: size * 0.44, color: '#F0EBE0', letterSpacing: '0.06em' }}>MITTENS</div>
-        <div style={{ fontFamily: "'Inter',sans-serif", fontWeight: 500, fontSize: size * 0.28, color: '#FF8A3D', letterSpacing: '0.18em' }}>AGI</div>
+        <div style={{ fontFamily: "'Inter',sans-serif", fontWeight: 500, fontSize: size * 0.28, color: '#DC143C', letterSpacing: '0.18em' }}>AGI</div>
       </div>
     )}
   </div>
@@ -60,8 +60,8 @@ const headingStyle = (delay='0s') => ({ fontFamily:"'Instrument Serif',serif", f
 function Eyebrow({ children }) {
   return (
     <div data-reveal style={{ display:'inline-flex', alignItems:'center', gap:8, marginBottom:20, opacity:0, transition:'opacity 0.6s, transform 0.6s', transform:'translateY(12px)' }}>
-      <div style={{ width:20, height:1, background:'#FF8A3D' }}/>
-      <span style={{ color:'#FF8A3D', fontSize:11, fontWeight:500, letterSpacing:'0.14em', textTransform:'uppercase' }}>{children}</span>
+      <div style={{ width:20, height:1, background:'#DC143C' }}/>
+      <span style={{ color:'#DC143C', fontSize:11, fontWeight:500, letterSpacing:'0.14em', textTransform:'uppercase' }}>{children}</span>
     </div>
   )
 }
@@ -69,7 +69,7 @@ function Eyebrow({ children }) {
 function Card({ children, delay=0, bg='#0F0F18' }) {
   return (
     <div data-reveal data-hover style={{ background:bg, border:'1px solid #1E1E2E', borderRadius:20, padding:32, cursor:'none', transition:`border-color 0.3s, transform 0.2s, box-shadow 0.3s, opacity 0.6s ${delay}s`, opacity:0, transform:'translateY(20px)' }}
-      onMouseEnter={e => { e.currentTarget.style.borderColor='rgba(255,138,61,0.35)'; e.currentTarget.style.transform='translateY(-4px)'; e.currentTarget.style.boxShadow='0 0 32px rgba(255,138,61,0.07)' }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor='rgba(220,20,60,0.35)'; e.currentTarget.style.transform='translateY(-4px)'; e.currentTarget.style.boxShadow='0 0 32px rgba(220,20,60,0.07)' }}
       onMouseLeave={e => { e.currentTarget.style.borderColor='#1E1E2E'; e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='none' }}
     >{children}</div>
   )
@@ -83,10 +83,10 @@ function Navbar({ onCTA }) {
       <div style={{ maxWidth:1120, margin:'0 auto', padding:'0 24px', height:62, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
         <MittensLogo size={34} showText={true}/>
         <div style={{ display:'flex', alignItems:'center', gap:32 }}>
-          {['Features','How it works','Pricing'].map(l => (
+          {['Features','How it works','Free trial'].map(l => (
             <a key={l} href={`#${l.toLowerCase().replace(/ /g,'-')}`} style={{ color:'#6E6C7E', fontSize:14, textDecoration:'none', transition:'color 0.2s' }} onMouseEnter={e=>e.target.style.color='#F0EBE0'} onMouseLeave={e=>e.target.style.color='#6E6C7E'}>{l}</a>
           ))}
-          <button onClick={onCTA} data-hover style={{ background:'#FF8A3D', color:'#08080D', fontWeight:700, fontSize:13, padding:'9px 22px', borderRadius:8, border:'none', cursor:'none', transition:'background 0.2s, transform 0.15s' }} onMouseEnter={e=>{e.target.style.background='#ff9d5c';e.target.style.transform='translateY(-1px)'}} onMouseLeave={e=>{e.target.style.background='#FF8A3D';e.target.style.transform='translateY(0)'}}>
+          <button onClick={onCTA} data-hover style={{ background:'#DC143C', color:'#08080D', fontWeight:700, fontSize:13, padding:'9px 22px', borderRadius:8, border:'none', cursor:'none', transition:'background 0.2s, transform 0.15s' }} onMouseEnter={e=>{e.target.style.background='#F03B5F';e.target.style.transform='translateY(-1px)'}} onMouseLeave={e=>{e.target.style.background='#DC143C';e.target.style.transform='translateY(0)'}}>
             Start free — 7 days
           </button>
         </div>
@@ -100,36 +100,36 @@ function Hero({ onCTA }) {
   useTypewriter(twRef, ['Reads your Gmail.','Spots your meetings.','Kills your spam.','Flags security alerts.','Sends reports.','Never sleeps.'])
   return (
     <section style={{ position:'relative', minHeight:'100vh', display:'flex', alignItems:'center', overflow:'hidden', paddingTop:62 }}>
-      <div style={{ position:'absolute', width:700, height:700, borderRadius:'50%', background:'radial-gradient(circle, rgba(255,138,61,0.07) 0%, transparent 65%)', top:'5%', right:'-10%', animation:'drift 9s ease-in-out infinite', pointerEvents:'none' }}/>
-      <div style={{ position:'absolute', width:500, height:500, borderRadius:'50%', background:'radial-gradient(circle, rgba(255,138,61,0.04) 0%, transparent 65%)', bottom:'10%', left:'-5%', animation:'drift 12s ease-in-out infinite reverse', pointerEvents:'none' }}/>
-      <div style={{ position:'absolute', inset:0, backgroundImage:'linear-gradient(rgba(255,138,61,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,138,61,0.025) 1px,transparent 1px)', backgroundSize:'60px 60px', pointerEvents:'none' }}/>
+      <div style={{ position:'absolute', width:700, height:700, borderRadius:'50%', background:'radial-gradient(circle, rgba(220,20,60,0.07) 0%, transparent 65%)', top:'5%', right:'-10%', animation:'drift 9s ease-in-out infinite', pointerEvents:'none' }}/>
+      <div style={{ position:'absolute', width:500, height:500, borderRadius:'50%', background:'radial-gradient(circle, rgba(220,20,60,0.04) 0%, transparent 65%)', bottom:'10%', left:'-5%', animation:'drift 12s ease-in-out infinite reverse', pointerEvents:'none' }}/>
+      <div style={{ position:'absolute', inset:0, backgroundImage:'linear-gradient(rgba(220,20,60,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(220,20,60,0.025) 1px,transparent 1px)', backgroundSize:'60px 60px', pointerEvents:'none' }}/>
       {/* Big watermark logo */}
       <div style={{ position:'absolute', top:-40, right:-60, opacity:0.04, pointerEvents:'none' }}>
         <img src={logo} alt="" style={{ width:340, height:340, objectFit:'contain', filter:'brightness(2)' }}/>
       </div>
       <div style={{ maxWidth:1120, margin:'0 auto', padding:'80px 24px 100px', width:'100%' }}>
         {/* Announcement bar */}
-        <div data-reveal style={{ display:'inline-flex', alignItems:'center', gap:10, background:'rgba(255,138,61,0.07)', border:'1px solid rgba(255,138,61,0.18)', borderRadius:100, padding:'6px 16px', marginBottom:52, opacity:0, transition:'opacity 0.6s, transform 0.6s', transform:'translateY(16px)' }}>
+        <div data-reveal style={{ display:'inline-flex', alignItems:'center', gap:10, background:'rgba(220,20,60,0.07)', border:'1px solid rgba(220,20,60,0.18)', borderRadius:100, padding:'6px 16px', marginBottom:52, opacity:0, transition:'opacity 0.6s, transform 0.6s', transform:'translateY(16px)' }}>
           <img src={logo} alt="" style={{ width:18, height:18, objectFit:'contain', filter:'brightness(1.2)' }}/>
-          <span style={{ color:'#FF8A3D', fontSize:12, fontWeight:500, letterSpacing:'0.06em' }}>Mittens AGI · AI Email Agent · Powered by AWS Bedrock</span>
+          <span style={{ color:'#DC143C', fontSize:12, fontWeight:500, letterSpacing:'0.06em' }}>Mittens AGI · AI Email Agent · Powered by Agent Router</span>
         </div>
         <h1 data-reveal style={{ fontFamily:"'Instrument Serif',serif", fontStyle:'italic', fontSize:'clamp(52px,8vw,100px)', lineHeight:1.02, color:'#F0EBE0', marginBottom:0, letterSpacing:'-0.02em', opacity:0, transition:'opacity 0.7s 0.1s, transform 0.7s 0.1s', transform:'translateY(24px)' }}>Your inbox,</h1>
-        <h1 data-reveal style={{ fontFamily:"'Instrument Serif',serif", fontStyle:'italic', fontSize:'clamp(52px,8vw,100px)', lineHeight:1.02, color:'#FF8A3D', marginBottom:0, letterSpacing:'-0.02em', opacity:0, transition:'opacity 0.7s 0.15s, transform 0.7s 0.15s', transform:'translateY(24px)' }}>handled.</h1>
+        <h1 data-reveal style={{ fontFamily:"'Instrument Serif',serif", fontStyle:'italic', fontSize:'clamp(52px,8vw,100px)', lineHeight:1.02, color:'#DC143C', marginBottom:0, letterSpacing:'-0.02em', opacity:0, transition:'opacity 0.7s 0.15s, transform 0.7s 0.15s', transform:'translateY(24px)' }}>handled.</h1>
         <h1 data-reveal style={{ fontFamily:"'Instrument Serif',serif", fontStyle:'italic', fontSize:'clamp(52px,8vw,100px)', lineHeight:1.02, color:'rgba(240,235,224,0.28)', marginBottom:44, letterSpacing:'-0.02em', opacity:0, transition:'opacity 0.7s 0.2s, transform 0.7s 0.2s', transform:'translateY(24px)' }}>While you sleep.</h1>
         <div data-reveal style={{ display:'flex', alignItems:'center', gap:6, marginBottom:52, opacity:0, transition:'opacity 0.6s 0.35s', transform:'translateY(12px)' }}>
           <span ref={twRef} style={{ color:'#F0EBE0', fontSize:20, fontWeight:300 }}/>
-          <span style={{ display:'inline-block', width:2, height:'1.2em', background:'#FF8A3D', animation:'blink 1s step-end infinite', verticalAlign:'middle' }}/>
+          <span style={{ display:'inline-block', width:2, height:'1.2em', background:'#DC143C', animation:'blink 1s step-end infinite', verticalAlign:'middle' }}/>
         </div>
         <div data-reveal style={{ display:'flex', gap:14, flexWrap:'wrap', marginBottom:80, opacity:0, transition:'opacity 0.6s 0.45s', transform:'translateY(12px)' }}>
-          <button onClick={onCTA} data-hover style={{ display:'inline-flex', alignItems:'center', gap:8, background:'#FF8A3D', color:'#08080D', fontWeight:700, fontSize:15, padding:'14px 32px', borderRadius:10, border:'none', cursor:'none', transition:'background 0.2s, transform 0.15s' }} onMouseEnter={e=>{e.currentTarget.style.background='#ff9d5c';e.currentTarget.style.transform='translateY(-2px)'}} onMouseLeave={e=>{e.currentTarget.style.background='#FF8A3D';e.currentTarget.style.transform='translateY(0)'}}>
+          <button onClick={onCTA} data-hover style={{ display:'inline-flex', alignItems:'center', gap:8, background:'#DC143C', color:'#08080D', fontWeight:700, fontSize:15, padding:'14px 32px', borderRadius:10, border:'none', cursor:'none', transition:'background 0.2s, transform 0.15s' }} onMouseEnter={e=>{e.currentTarget.style.background='#F03B5F';e.currentTarget.style.transform='translateY(-2px)'}} onMouseLeave={e=>{e.currentTarget.style.background='#DC143C';e.currentTarget.style.transform='translateY(0)'}}>
             <img src={logo} alt="" style={{ width:18, height:18, objectFit:'contain' }}/> Connect Gmail — Free
           </button>
-          <a href="#how-it-works" data-hover style={{ display:'inline-flex', alignItems:'center', gap:8, background:'transparent', color:'#F0EBE0', fontWeight:500, fontSize:15, padding:'14px 32px', borderRadius:10, border:'1px solid #1E1E2E', textDecoration:'none', cursor:'none', transition:'border-color 0.2s, color 0.2s' }} onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(255,138,61,0.4)';e.currentTarget.style.color='#FF8A3D'}} onMouseLeave={e=>{e.currentTarget.style.borderColor='#1E1E2E';e.currentTarget.style.color='#F0EBE0'}}>
+          <a href="#how-it-works" data-hover style={{ display:'inline-flex', alignItems:'center', gap:8, background:'transparent', color:'#F0EBE0', fontWeight:500, fontSize:15, padding:'14px 32px', borderRadius:10, border:'1px solid #1E1E2E', textDecoration:'none', cursor:'none', transition:'border-color 0.2s, color 0.2s' }} onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(220,20,60,0.4)';e.currentTarget.style.color='#DC143C'}} onMouseLeave={e=>{e.currentTarget.style.borderColor='#1E1E2E';e.currentTarget.style.color='#F0EBE0'}}>
             See how it works →
           </a>
         </div>
         <div data-reveal style={{ display:'flex', gap:48, borderTop:'1px solid #1E1E2E', paddingTop:40, flexWrap:'wrap', opacity:0, transition:'opacity 0.6s 0.55s' }}>
-          {[['7 days','Free trial'],['$4','Per month after'],['6','Smart categories'],['30min','Auto-run interval']].map(([val,label]) => (
+          {[['7 days','Free trial'],['One model','Agent Router'],['6','Smart categories'],['30min','Auto-run interval']].map(([val,label]) => (
             <div key={label}>
               <div style={{ fontFamily:"'Instrument Serif',serif", fontStyle:'italic', fontSize:32, color:'#F0EBE0', lineHeight:1 }}>{val}</div>
               <div style={{ color:'#6E6C7E', fontSize:13, marginTop:6 }}>{label}</div>
@@ -142,14 +142,14 @@ function Hero({ onCTA }) {
         @keyframes drift{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,20px) scale(1.1)}}
         @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
         @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-        .c-dot{position:fixed;top:0;left:0;width:10px;height:10px;background:#FF8A3D;border-radius:50%;pointer-events:none;z-index:9999;transition:transform 0.08s}
-        .c-ring{position:fixed;top:0;left:0;width:36px;height:36px;border:1.5px solid rgba(255,138,61,0.45);border-radius:50%;pointer-events:none;z-index:9998;transition:width 0.2s,height 0.2s,border-color 0.2s}
-        .c-ring.big{width:52px;height:52px;border-color:rgba(255,138,61,0.8)}
+        .c-dot{position:fixed;top:0;left:0;width:10px;height:10px;background:#DC143C;border-radius:50%;pointer-events:none;z-index:9999;transition:transform 0.08s}
+        .c-ring{position:fixed;top:0;left:0;width:36px;height:36px;border:1.5px solid rgba(220,20,60,0.45);border-radius:50%;pointer-events:none;z-index:9998;transition:width 0.2s,height 0.2s,border-color 0.2s}
+        .c-ring.big{width:52px;height:52px;border-color:rgba(220,20,60,0.8)}
         [data-reveal].in{opacity:1!important;transform:none!important}
         html{cursor:none}
         @media(max-width:768px){.c-dot,.c-ring{display:none}html{cursor:auto}}
         *{box-sizing:border-box;margin:0;padding:0}
-        ::selection{background:rgba(255,138,61,0.2);color:#F0EBE0}
+        ::selection{background:rgba(220,20,60,0.2);color:#F0EBE0}
         ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#08080D}::-webkit-scrollbar-thumb{background:#1E1E2E;border-radius:2px}
       `}</style>
     </section>
@@ -157,7 +157,7 @@ function Hero({ onCTA }) {
 }
 
 function Marquee() {
-  const items = ['Gmail API','AWS Bedrock','MCP Protocol','Nova Pro','Nova Micro','ntfy.sh','OpenClaw','Supabase','Paystack','OAuth 2.0','Agentic AI']
+  const items = ['Gmail API','Agent Router','MCP Protocol','ntfy.sh','OpenClaw','Google OAuth','Agentic AI']
   const all = [...items,...items]
   return (
     <div style={{ borderTop:'1px solid #1E1E2E', borderBottom:'1px solid #1E1E2E', background:'#0F0F18', padding:'14px 0', overflow:'hidden' }}>
@@ -175,7 +175,7 @@ function Marquee() {
 function HowItWorks() {
   const steps = [
     { n:'01', title:'Connect Gmail', body:'One-click Google OAuth. Mittens gets secure read access to your inbox in under 30 seconds. Nothing stored without permission.' },
-    { n:'02', title:'Agent categorizes', body:'Every 30 minutes, Mittens fetches unread emails, runs them through Nova Micro (trial) or Nova Pro (paid), and applies category rules autonomously.' },
+    { n:'02', title:'Agent categorizes', body:'Mittens fetches unread emails, runs them through your configured Agent Router model, and applies category rules.' },
     { n:'03', title:'You get a report', body:"A clean digest hits your phone via ntfy.sh — meetings, security alerts, spam count. No noise, no missed emails, just signal." },
   ]
   return (
@@ -202,7 +202,7 @@ function Features() {
     { tag:'AI',          title:'Smart categorization',  body:'Six categories: MEETING, EVENT, SECURITY, WORK, PERSONAL, SPAM. Each email tagged with AI precision.' },
     { tag:'Reports',     title:'Inbox reports',         body:'Daily and on-demand digests to your phone via ntfy.sh. One notification, full picture.' },
     { tag:'Security',    title:'Security alerting',     body:'Login alerts, password resets, suspicious senders — surfaced immediately as urgent priority.' },
-    { tag:'AWS Bedrock', title:'Nova Micro → Nova Pro', body:'Nova Micro on the free trial. Nova Pro on paid — better reasoning, higher accuracy, 300k context.' },
+    { tag:'Agent Router', title:'One configurable model', body:'Mittens sends email classification and review requests through your configured Agent Router model.' },
   ]
   return (
     <section id="features" style={{ background:'#0F0F18', padding:'120px 24px' }}>
@@ -213,8 +213,8 @@ function Features() {
           <p data-reveal style={{ color:'#6E6C7E', fontSize:14, maxWidth:280, lineHeight:1.7, opacity:0, transition:'opacity 0.6s 0.2s' }}>Mittens reads, categorizes, escalates, and reports — continuously, on your behalf.</p>
         </div>
         <div style={{ display:'flex', gap:8, flexWrap:'wrap', marginBottom:44 }}>
-          {['Gmail','MCP','Bedrock','Reports','Security','Agentic'].map(tag => (
-            <span key={tag} style={{ background:'rgba(255,138,61,0.06)', border:'1px solid rgba(255,138,61,0.15)', color:'#FF8A3D', fontSize:12, padding:'5px 14px', borderRadius:100, fontWeight:500 }}>{tag}</span>
+          {['Gmail','MCP','Agent Router','Reports','Security','Agentic'].map(tag => (
+            <span key={tag} style={{ background:'rgba(220,20,60,0.06)', border:'1px solid rgba(220,20,60,0.15)', color:'#DC143C', fontSize:12, padding:'5px 14px', borderRadius:100, fontWeight:500 }}>{tag}</span>
           ))}
         </div>
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))', gap:16 }}>
@@ -222,7 +222,7 @@ function Features() {
             <Card key={f.title} delay={(i%3)*0.08} bg="#08080D">
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:20 }}>
                 <img src={logo} alt="" style={{ width:20, height:20, objectFit:'contain', opacity:0.7 }}/>
-                <span style={{ background:'rgba(255,138,61,0.08)', border:'1px solid rgba(255,138,61,0.15)', color:'#FF8A3D', fontSize:11, padding:'3px 10px', borderRadius:100, fontWeight:500 }}>{f.tag}</span>
+                <span style={{ background:'rgba(220,20,60,0.08)', border:'1px solid rgba(220,20,60,0.15)', color:'#DC143C', fontSize:11, padding:'3px 10px', borderRadius:100, fontWeight:500 }}>{f.tag}</span>
               </div>
               <h3 style={{ color:'#F0EBE0', fontSize:18, fontWeight:500, marginBottom:10 }}>{f.title}</h3>
               <p style={{ color:'#6E6C7E', fontSize:13, lineHeight:1.7 }}>{f.body}</p>
@@ -235,53 +235,17 @@ function Features() {
 }
 
 function Pricing({ onCTA }) {
-  const proFeatures = ['Amazon Nova Pro model','Gmail read + modify access','MCP agentic functions','6-category email classification','Security alert priority','Daily reports via ntfy.sh','Sender familiarity tagging','Custom query intervals']
   return (
-    <section id="pricing" style={{ padding:'120px 24px', maxWidth:1120, margin:'0 auto' }}>
-      <Eyebrow>Pricing</Eyebrow>
-      <h2 data-reveal style={headingStyle('0.1s')}>One plan.<br/>Everything included.</h2>
-      <p data-reveal style={{ color:'#6E6C7E', marginBottom:64, fontSize:15, marginTop:16, opacity:0, transition:'opacity 0.6s 0.2s' }}>Start with a 7-day free trial on Nova Micro. No card required.</p>
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))', gap:24, maxWidth:840, margin:'0 auto' }}>
-        <Card delay={0}>
-          <div style={{ color:'#6E6C7E', fontSize:11, textTransform:'uppercase', letterSpacing:'0.14em', fontFamily:'monospace', marginBottom:16 }}>Free trial</div>
-          <div style={{ fontFamily:"'Instrument Serif',serif", fontStyle:'italic', fontSize:44, color:'#F0EBE0', marginBottom:6 }}>7 days</div>
-          <div style={{ color:'#6E6C7E', fontSize:13, marginBottom:28 }}>Nova Micro · No card needed</div>
-          <div style={{ height:1, background:'#1E1E2E', marginBottom:24 }}/>
-          {['Gmail integration','Email categorization','ntfy.sh reports','Basic security alerts'].map(f => (
-            <div key={f} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:12 }}>
-              <span style={{ color:'#FF8A3D', fontSize:10 }}>◆</span>
-              <span style={{ color:'#6E6C7E', fontSize:13 }}>{f}</span>
-            </div>
-          ))}
-          <button onClick={onCTA} data-hover style={{ marginTop:28, width:'100%', background:'transparent', color:'#F0EBE0', fontWeight:500, fontSize:14, padding:'12px 0', borderRadius:10, border:'1px solid #1E1E2E', cursor:'none', transition:'border-color 0.2s, color 0.2s' }} onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(255,138,61,0.4)';e.currentTarget.style.color='#FF8A3D'}} onMouseLeave={e=>{e.currentTarget.style.borderColor='#1E1E2E';e.currentTarget.style.color='#F0EBE0'}}>Start free trial</button>
-        </Card>
-        <div data-reveal data-hover style={{ background:'linear-gradient(135deg,#141420,#0F0F18)', border:'1px solid rgba(255,138,61,0.3)', borderRadius:20, padding:32, boxShadow:'0 0 60px rgba(255,138,61,0.06)', cursor:'none', transition:'transform 0.2s, box-shadow 0.2s, opacity 0.6s', transitionDelay:'0.1s', opacity:0, transform:'translateY(20px)' }} onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-4px)';e.currentTarget.style.boxShadow='0 0 80px rgba(255,138,61,0.1)'}} onMouseLeave={e=>{e.currentTarget.style.transform='translateY(0)';e.currentTarget.style.boxShadow='0 0 60px rgba(255,138,61,0.06)'}}>
-          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
-            <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-              <img src={logo} alt="" style={{ width:22, height:22, objectFit:'contain', filter:'drop-shadow(0 0 4px rgba(255,138,61,0.5))' }}/>
-              <span style={{ color:'#FF8A3D', fontSize:11, textTransform:'uppercase', letterSpacing:'0.14em', fontFamily:'monospace' }}>Mittens Pro</span>
-            </div>
-            <span style={{ background:'#FF8A3D', color:'#08080D', fontSize:11, padding:'3px 10px', borderRadius:100, fontWeight:700 }}>Popular</span>
-          </div>
-          <div style={{ display:'flex', alignItems:'baseline', gap:6, marginBottom:6 }}>
-            <span style={{ fontFamily:"'Instrument Serif',serif", fontStyle:'italic', fontSize:52, color:'#F0EBE0', lineHeight:1 }}>$4</span>
-            <span style={{ color:'#6E6C7E', fontSize:14 }}>/month</span>
-          </div>
-          <div style={{ color:'#6E6C7E', fontSize:13, marginBottom:28 }}>Nova Pro · Cancel anytime</div>
-          <div style={{ height:1, background:'rgba(255,138,61,0.15)', marginBottom:24 }}/>
-          {proFeatures.map(f => (
-            <div key={f} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:12 }}>
-              <span style={{ color:'#FF8A3D', fontSize:10 }}>◆</span>
-              <span style={{ color:'#F0EBE0', fontSize:13 }}>{f}</span>
-            </div>
-          ))}
-          <button onClick={onCTA} data-hover style={{ marginTop:28, width:'100%', display:'flex', alignItems:'center', justifyContent:'center', gap:8, background:'#FF8A3D', color:'#08080D', fontWeight:700, fontSize:15, padding:'14px 0', borderRadius:10, border:'none', cursor:'none', transition:'background 0.2s, transform 0.15s' }} onMouseEnter={e=>{e.currentTarget.style.background='#ff9d5c';e.currentTarget.style.transform='translateY(-1px)'}} onMouseLeave={e=>{e.currentTarget.style.background='#FF8A3D';e.currentTarget.style.transform='translateY(0)'}}>
-            <img src={logo} alt="" style={{ width:18, height:18, objectFit:'contain' }}/>
-            Get Mittens Pro — $4/mo
-          </button>
-          <p style={{ textAlign:'center', color:'#6E6C7E', fontSize:12, marginTop:14 }}>Via Paystack · ~KES 520/mo</p>
-        </div>
-      </div>
+    <section id="free-trial" style={{ padding:'120px 24px', maxWidth:1120, margin:'0 auto' }}>
+      <Eyebrow>Free trial</Eyebrow>
+      <h2 data-reveal style={headingStyle('0.1s')}>Seven days.<br/>No payment required.</h2>
+      <p data-reveal style={{ color:'#6E6C7E', marginBottom:48, fontSize:15, marginTop:16, opacity:0, transition:'opacity 0.6s 0.2s' }}>Create an account to connect Gmail and get started.</p>
+      <Card delay={0}>
+        <div style={{ color:'#6E6C7E', fontSize:11, textTransform:'uppercase', letterSpacing:'0.14em', fontFamily:'monospace', marginBottom:16 }}>Free trial</div>
+        <div style={{ fontFamily:"'Instrument Serif',serif", fontStyle:'italic', fontSize:44, color:'#F0EBE0', marginBottom:6 }}>7 days</div>
+        <div style={{ color:'#6E6C7E', fontSize:13, marginBottom:28 }}>One Agent Router model · No card needed</div>
+        <button onClick={onCTA} data-hover style={{ marginTop:12, width:'100%', background:'#DC143C', color:'#08080D', fontWeight:700, fontSize:15, padding:'14px 0', borderRadius:10, border:'none', cursor:'none' }}>Start free trial</button>
+      </Card>
     </section>
   )
 }
@@ -289,11 +253,11 @@ function Pricing({ onCTA }) {
 function CTABanner({ onCTA }) {
   return (
     <section style={{ padding:'120px 24px', maxWidth:1120, margin:'0 auto' }}>
-      <div data-reveal style={{ background:'linear-gradient(135deg,#141420,#0F0F18)', border:'1px solid rgba(255,138,61,0.25)', borderRadius:32, padding:'80px 40px', textAlign:'center', boxShadow:'0 0 80px rgba(255,138,61,0.05)', opacity:0, transition:'opacity 0.7s, transform 0.7s', transform:'scale(0.97)' }}>
-        <img src={logo} alt="Mittens AGI" style={{ width:80, height:80, objectFit:'contain', margin:'0 auto 32px', display:'block', filter:'drop-shadow(0 0 24px rgba(255,138,61,0.35))', opacity:0.75 }}/>
+      <div data-reveal style={{ background:'linear-gradient(135deg,#141420,#0F0F18)', border:'1px solid rgba(220,20,60,0.25)', borderRadius:32, padding:'80px 40px', textAlign:'center', boxShadow:'0 0 80px rgba(220,20,60,0.05)', opacity:0, transition:'opacity 0.7s, transform 0.7s', transform:'scale(0.97)' }}>
+        <img src={logo} alt="Mittens AGI" style={{ width:80, height:80, objectFit:'contain', margin:'0 auto 32px', display:'block', filter:'drop-shadow(0 0 24px rgba(220,20,60,0.35))', opacity:0.75 }}/>
         <h2 style={{ fontFamily:"'Instrument Serif',serif", fontStyle:'italic', fontSize:'clamp(40px,6vw,72px)', color:'#F0EBE0', marginBottom:20, lineHeight:1.05 }}>Your inbox won't<br/>manage itself.</h2>
-        <p style={{ color:'#6E6C7E', fontSize:16, marginBottom:40 }}>7 days free, then $4/month. No contracts, no noise.</p>
-        <button onClick={onCTA} data-hover style={{ display:'inline-flex', alignItems:'center', gap:10, background:'#FF8A3D', color:'#08080D', fontWeight:700, fontSize:16, padding:'16px 40px', borderRadius:12, border:'none', cursor:'none', transition:'background 0.2s, transform 0.15s' }} onMouseEnter={e=>{e.currentTarget.style.background='#ff9d5c';e.currentTarget.style.transform='translateY(-2px)'}} onMouseLeave={e=>{e.currentTarget.style.background='#FF8A3D';e.currentTarget.style.transform='translateY(0)'}}>
+        <p style={{ color:'#6E6C7E', fontSize:16, marginBottom:40 }}>Seven days of access. No payment required.</p>
+        <button onClick={onCTA} data-hover style={{ display:'inline-flex', alignItems:'center', gap:10, background:'#DC143C', color:'#08080D', fontWeight:700, fontSize:16, padding:'16px 40px', borderRadius:12, border:'none', cursor:'none', transition:'background 0.2s, transform 0.15s' }} onMouseEnter={e=>{e.currentTarget.style.background='#F03B5F';e.currentTarget.style.transform='translateY(-2px)'}} onMouseLeave={e=>{e.currentTarget.style.background='#DC143C';e.currentTarget.style.transform='translateY(0)'}}>
           <img src={logo} alt="" style={{ width:20, height:20, objectFit:'contain' }}/> Connect Gmail — Start free
         </button>
       </div>
@@ -311,7 +275,7 @@ function Footer() {
             <a key={l} href="#" style={{ color:'#6E6C7E', fontSize:13, textDecoration:'none', transition:'color 0.2s' }} onMouseEnter={e=>e.target.style.color='#F0EBE0'} onMouseLeave={e=>e.target.style.color='#6E6C7E'}>{l}</a>
           ))}
         </div>
-        <div style={{ color:'#6E6C7E', fontSize:12 }}>Built by <a href="https://github.com/salamander-tech-hub" style={{ color:'#FF8A3D', textDecoration:'none' }}>Salamander Tech Hub</a> · 2026</div>
+        <div style={{ color:'#6E6C7E', fontSize:12 }}>Built by <a href="https://github.com/salamander-tech-hub" style={{ color:'#DC143C', textDecoration:'none' }}>Salamander Tech Hub</a> · 2026</div>
       </div>
     </footer>
   )
