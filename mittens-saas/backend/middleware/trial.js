@@ -8,14 +8,13 @@ export const checkPlan = async (req, res, next) => {
       const endsAt = new Date(startedAt)
       endsAt.setDate(endsAt.getDate() + 7)
       trial = await prisma.trial.create({
-        data: { userId: req.user.id, startedAt, endsAt, model: process.env.AGENTROUTER_MODEL || 'gpt-5.5' },
+        data: { userId: req.user.id, startedAt, endsAt },
       })
       req.user.trial = trial
     }
 
     if (trial.isActive && trial.endsAt > new Date()) {
       req.plan = 'trial'
-      req.model = process.env.AGENTROUTER_MODEL || 'gpt-5.5'
       return next()
     }
 

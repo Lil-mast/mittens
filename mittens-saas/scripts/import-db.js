@@ -56,7 +56,6 @@ try {
         startedAt: row.startedAt ? new Date(row.startedAt) : new Date(),
         endsAt: new Date(row.endsAt),
         isActive: Boolean(row.isActive),
-        model: process.env.AGENTROUTER_MODEL || 'gpt-5.5',
       },
       update: {},
     })

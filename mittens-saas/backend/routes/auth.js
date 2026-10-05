@@ -43,7 +43,7 @@ const ensureTrial = async (userId) => {
   endsAt.setDate(endsAt.getDate() + 7)
   await prisma.trial.upsert({
     where: { userId },
-    create: { userId, startedAt, endsAt, model: process.env.AGENTROUTER_MODEL || 'gpt-5.5' },
+    create: { userId, startedAt, endsAt },
     update: {},
   })
 }
@@ -123,7 +123,7 @@ router.get('/me', async (req, res) => {
       include: { trial: true },
     })
     if (!user) return res.status(401).json({ error: 'Invalid token' })
-    res.json({ user: safeUser(user), model: process.env.AGENTROUTER_MODEL || 'gpt-5.5' })
+    res.json({ user: safeUser(user) })
   } catch {
     res.status(401).json({ error: 'Invalid token' })
   }

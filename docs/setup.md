@@ -7,7 +7,7 @@ Mittens uses a React frontend, an Express API, Prisma with MariaDB, Google OAuth
 - Node.js 20.19+ and npm or pnpm
 - MariaDB 10.0+ and an empty database
 - Google Cloud OAuth credentials with Gmail API enabled
-- An Agent Router API key and a model available to that key
+- An Agent Router API key and an endpoint that accepts chat-completion requests without a model field
 - An SMTP service for password recovery emails
 
 ## Install and configure
@@ -34,7 +34,6 @@ The example contains local development values. Replace credentials and database 
 | `GOOGLE_REDIRECT_URI` | Yes | Backend callback URL registered in Google Cloud. |
 | `AGENTROUTER_API_KEY` | Yes | Server-side Agent Router key. |
 | `AGENTROUTER_BASE_URL` | No | Defaults to `https://co.agentrouter.org/v1`. |
-| `AGENTROUTER_MODEL` | No | Defaults to `gpt-5.5`; choose a model available to your Agent Router key. |
 | `SMTP_URL` | For password recovery | SMTP connection URL used to deliver reset links. |
 | `MAIL_FROM` | No | Sender shown on reset emails; defaults to a local placeholder. |
 
@@ -87,7 +86,7 @@ The importer preserves profile fields, Gmail tokens, onboarding settings, active
 ## Behavior notes
 
 - New accounts start a seven-day trial at signup. Email processing is blocked after expiry.
-- The model ID is configured by `AGENTROUTER_MODEL`; the API key and endpoint are only used by the backend.
+- Agent Router requests use the configured API key and endpoint; Mittens does not pin a model ID.
 - Google OAuth sign-in also stores the granted Gmail tokens for email access.
 - Password recovery tokens expire after one hour and can only be used once.
 - The backend health endpoint is `GET /api/health`.

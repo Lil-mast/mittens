@@ -32,8 +32,6 @@ model Trial {
   startedAt   DateTime @default(now())
   endsAt      DateTime
   isActive    Boolean  @default(true)
-  model       String
-
   user        User     @relation(fields: [userId], references: [id])
 }
 

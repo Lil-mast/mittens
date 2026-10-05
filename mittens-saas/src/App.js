@@ -129,7 +129,7 @@ function Hero({ onCTA }) {
           </a>
         </div>
         <div data-reveal style={{ display:'flex', gap:48, borderTop:'1px solid #1E1E2E', paddingTop:40, flexWrap:'wrap', opacity:0, transition:'opacity 0.6s 0.55s' }}>
-          {[['7 days','Free trial'],['One model','Agent Router'],['6','Smart categories'],['30min','Auto-run interval']].map(([val,label]) => (
+          {[['7 days','Free trial'],['Multiple models','Agent Router'],['6','Smart categories'],['30min','Auto-run interval']].map(([val,label]) => (
             <div key={label}>
               <div style={{ fontFamily:"'Instrument Serif',serif", fontStyle:'italic', fontSize:32, color:'#F0EBE0', lineHeight:1 }}>{val}</div>
               <div style={{ color:'#6E6C7E', fontSize:13, marginTop:6 }}>{label}</div>
@@ -175,7 +175,7 @@ function Marquee() {
 function HowItWorks() {
   const steps = [
     { n:'01', title:'Connect Gmail', body:'One-click Google OAuth. Mittens gets secure read access to your inbox in under 30 seconds. Nothing stored without permission.' },
-    { n:'02', title:'Agent categorizes', body:'Mittens fetches unread emails, runs them through your configured Agent Router model, and applies category rules.' },
+    { n:'02', title:'Agent categorizes', body:'Mittens fetches unread emails, sends them through Agent Router, and applies category rules.' },
     { n:'03', title:'You get a report', body:"A clean digest hits your phone via ntfy.sh — meetings, security alerts, spam count. No noise, no missed emails, just signal." },
   ]
   return (
@@ -202,7 +202,7 @@ function Features() {
     { tag:'AI',          title:'Smart categorization',  body:'Six categories: MEETING, EVENT, SECURITY, WORK, PERSONAL, SPAM. Each email tagged with AI precision.' },
     { tag:'Reports',     title:'Inbox reports',         body:'Daily and on-demand digests to your phone via ntfy.sh. One notification, full picture.' },
     { tag:'Security',    title:'Security alerting',     body:'Login alerts, password resets, suspicious senders — surfaced immediately as urgent priority.' },
-    { tag:'Agent Router', title:'One configurable model', body:'Mittens sends email classification and review requests through your configured Agent Router model.' },
+    { tag:'Agent Router', title:'Flexible model routing', body:'Mittens sends email classification and review requests through your Agent Router endpoint.' },
   ]
   return (
     <section id="features" style={{ background:'#0F0F18', padding:'120px 24px' }}>
@@ -243,7 +243,7 @@ function Pricing({ onCTA }) {
       <Card delay={0}>
         <div style={{ color:'#6E6C7E', fontSize:11, textTransform:'uppercase', letterSpacing:'0.14em', fontFamily:'monospace', marginBottom:16 }}>Free trial</div>
         <div style={{ fontFamily:"'Instrument Serif',serif", fontStyle:'italic', fontSize:44, color:'#F0EBE0', marginBottom:6 }}>7 days</div>
-        <div style={{ color:'#6E6C7E', fontSize:13, marginBottom:28 }}>One Agent Router model · No card needed</div>
+        <div style={{ color:'#6E6C7E', fontSize:13, marginBottom:28 }}>Agent Router · No card needed</div>
         <button onClick={onCTA} data-hover style={{ marginTop:12, width:'100%', background:'#DC143C', color:'#08080D', fontWeight:700, fontSize:15, padding:'14px 0', borderRadius:10, border:'none', cursor:'none' }}>Start free trial</button>
       </Card>
     </section>

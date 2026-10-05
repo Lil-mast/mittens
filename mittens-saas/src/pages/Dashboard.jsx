@@ -353,11 +353,9 @@ export default function Dashboard() {
 
             {/* Model info */}
             <div className="card-glow rounded-2xl p-6 bg-surface">
-              <div className="text-text font-medium mb-4 text-sm">Active model</div>
-              <div className="text-accent font-mono text-xs bg-accent-soft border border-accent/20 px-3 py-2 rounded-lg">
-                {plan?.model || 'Agent Router'}
-              </div>
-              <div className="mt-4 text-muted text-xs leading-relaxed">One model is used throughout your trial.</div>
+              <div className="text-text font-medium mb-4 text-sm">AI provider</div>
+              <div className="text-accent font-mono text-xs bg-accent-soft border border-accent/20 px-3 py-2 rounded-lg">Agent Router</div>
+              <div className="mt-4 text-muted text-xs leading-relaxed">Your Agent Router configuration handles inbox review and email categorization.</div>
             </div>
 
             {/* Category breakdown */}

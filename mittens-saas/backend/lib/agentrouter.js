@@ -1,12 +1,10 @@
 import axios from 'axios'
 
 const endpoint = (process.env.AGENTROUTER_BASE_URL || 'https://co.agentrouter.org/v1').replace(/\/$/, '')
-const model = process.env.AGENTROUTER_MODEL || 'gpt-5.5'
 
 export const invokeModel = async (prompt) => {
   if (!process.env.AGENTROUTER_API_KEY) throw new Error('AGENTROUTER_API_KEY is not configured')
   const { data } = await axios.post(`${endpoint}/chat/completions`, {
-    model,
     messages: [{ role: 'user', content: prompt }],
     max_tokens: 2048,
     temperature: 0.3,

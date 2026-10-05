@@ -17,7 +17,6 @@ router.get('/profile', requireAuth, async (req, res) => {
     plan: {
       status: active ? 'trial' : 'expired',
       daysLeft: active ? Math.ceil((trial.endsAt - new Date()) / 86400000) : 0,
-      model: process.env.AGENTROUTER_MODEL || 'gpt-5.5',
     },
   })
 })

@@ -232,7 +232,7 @@ const HowItWorks = () => {
     {
       n: '02',
       title: 'Agent takes over',
-      body: 'Mittens fetches your unread emails, sends them through your configured Agent Router model, and categorizes each one.',
+      body: 'Mittens fetches your unread emails, sends them through Agent Router, and categorizes each one.',
       icon: <BotIcon size={32} />,
     },
     {
@@ -298,8 +298,8 @@ const Features = () => {
       tag: 'Security',
     },
     {
-      title: 'Two-model strategy',
-      body: 'Use one configurable Agent Router model for inbox review and email categorization throughout the seven-day trial.',
+      title: 'Flexible model routing',
+      body: 'Use your Agent Router endpoint for inbox review and email categorization throughout the seven-day trial.',
       tag: 'Agent Router',
     },
   ]
@@ -361,7 +361,7 @@ const Pricing = ({ onConnect }) => {
         >
           <div className="text-muted text-xs uppercase tracking-widest mb-4 font-mono">Free trial</div>
           <div className="text-4xl font-serif italic text-text mb-2">7 days</div>
-          <div className="text-muted text-sm mb-8">One configured Agent Router model · No card needed</div>
+          <div className="text-muted text-sm mb-8">Agent Router · No card needed</div>
 
           <div className="section-divider mb-8" />
 

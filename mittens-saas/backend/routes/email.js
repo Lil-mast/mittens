@@ -118,7 +118,6 @@ router.get('/categorize', requireAuth, checkPlan, async (req, res) => {
     res.json({
       total: result.length,
       plan: req.plan,
-      model: req.model,
       emails: result,
       grouped
     })
